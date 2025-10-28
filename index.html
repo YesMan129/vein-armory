@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VEIN — Hugh and Billy's Gun & Gas</title>
+<style>
+  :root{
+    --ink:#0a0a0a; --ink-2:#121212; --muted:#a1a1aa; --text:#e5e7eb; --lime:#b3ff1a;
+    --ring:rgba(255,255,255,.08);
+  }
+  html,body{margin:0;height:100%;background:#000;color:var(--text);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial;}
+  .wrap{max-width:1120px;margin:auto;padding:24px;}
+  .bg{position:fixed; inset:0; z-index:-2;
+    background: radial-gradient(60% 60% at 50% 20%, rgba(120,120,120,.25), rgba(10,10,10,.96));}
+  .grime,.dust{position:fixed; inset:0; z-index:-1; pointer-events:none}
+  .grime{mix-blend-mode:overlay; opacity:.35;
+    background: repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 2px, transparent 2px 6px);}
+  .dust{opacity:.22;background:
+    radial-gradient(rgba(255,255,255,.15) 1px, transparent 1px); background-size:3px 3px;}
+  header{position:sticky; top:0; backdrop-filter:blur(8px);
+    background:rgba(0,0,0,.45); border-bottom:1px solid var(--ring); z-index:5;}
+  .nav{display:flex; gap:10px; align-items:center; padding:12px 24px; max-width:1120px; margin:auto;}
+  .brand{font-weight:700; letter-spacing:.04em}
+  .btn{border:1px solid var(--ring); color:var(--text); background:transparent; padding:8px 14px; border-radius:14px; cursor:pointer}
+  .btn.primary{background:rgba(179,255,26,.9); color:#000; border-color:transparent}
+  .btn.ghost{background:transparent}
+  .btn:hover{filter:brightness(1.08)}
+  .card{background:rgba(24,24,27,.75); border:1px solid #27272a; border-radius:18px; box-shadow:0 0 0 1px rgba(255,255,255,.03)}
+  .p-20{padding:20px} .p-24{padding:24px}
+  .grid{display:grid; gap:18px}
+  @media(min-width:900px){ .grid.cols-3{grid-template-columns:repeat(3,1fr)} .grid.cols-2{grid-template-columns:repeat(2,1fr)} }
+  .hero{position:relative; overflow:hidden; border-radius:22px; border:1px solid var(--ring)}
+  .hero img{width:100%; height:54vh; object-fit:cover; display:block}
+  .hero .overlay{position:absolute; inset:0; background:linear-gradient(to top,#000,rgba(0,0,0,.45),transparent)}
+  .hero .content{position:absolute; inset-inline:0; bottom:0; padding:28px}
+  .badge{color:#b3ff1a; font:11px/1.1 ui-monospace,Menlo,Consolas; letter-spacing:.22em; text-transform:uppercase}
+  h1{margin:6px 0 0; font-size:40px}
+  h2{margin:0 0 6px; font-size:22px}
+  h3{margin:0; font-size:18px}
+  .muted{color:var(--muted)}
+  .spec{background:rgba(255,255,255,.04); border:1px solid var(--ring); padding:10px 12px; border-radius:12px}
+  .spec label{display:block; font-size:10px; color:#9ca3af; letter-spacing:.08em; text-transform:uppercase}
+  .spec .v{font-size:14px}
+  .controls{display:grid; gap:10px}
+  @media(min-width:700px){ .controls{grid-template-columns:2fr 1fr} }
+  .input,.select{border:1px solid var(--ring); background:rgba(0,0,0,.4); color:var(--text); padding:10px 12px; border-radius:12px; width:100%}
+  .weapon-img{width:100%; border-radius:14px; border:1px solid var(--ring); object-fit:cover}
+  .chip{font:12px ui-monospace; background:rgba(179,255,26,.12); color:#d8ff8c; padding:2px 8px; border-radius:999px; border:1px solid rgba(179,255,26,.25)}
+  footer{margin-top:40px; border-top:1px solid var(--ring); padding:20px; text-align:center; color:#9ca3af; font-size:12px}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="grime"></div><div class="dust"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand">☣ VEIN // Good Gaming Outposts</div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn primary" data-nav="home">Home</button>
+      <button class="btn ghost" data-nav="weapons">Weapons</button>
+      <a class="btn" href="#map">Map</a>
+      <a class="btn" href="https://discord.gg/tFmUgtDZp8" target="_blank" rel="noopener">Discord ↗</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <!-- store front image -->
+      <img src="images/gunstore.png" alt="Good Gaming Armory — Dannemora" />
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="badge">Safe-Trade Outpost</div>
+        <h1>Hugh and Billy's Gun & Gas — Dannemora</h1>
+        <p class="muted" style="max-width:720px">
+          Fortified survivor market — verified weapons, attachments, and ammo. Server-safe pricing. No scamming, no KOS on lot.
+        </p>
+        <p class="muted" style="margin:6px 0 0">
+          <strong>Store operated by Hugh Jackedman &amp; Billy Bob Jenkins.</strong>
+        </p>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn primary" data-nav="weapons">View Available Weapons →</button>
+          <a class="btn" href="#map">Find on Map</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RULES ONLY (Hours removed) -->
+    <div class="grid cols-3" style="margin-top:18px">
+      <div class="card p-20" style="grid-column:1 / -1">
+        <h3>On-Site Rules</h3>
+        <ul class="muted" style="margin:8px 0 0 18px">
+          <li>Respect safe-zone boundaries and staff.</li>
+          <li>Weapons unloaded inside. No discharging on lot.</li>
+          <li>Barter welcomed; scamming = ban.</li>
+          <li>IDs checked. Faction discounts at manager discretion.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div id="map" class="card p-20" style="margin-top:18px">
+      <h3>Location — Dannemora</h3>
+      <!-- on-site location image -->
+      <img src="images/Screenshot 2025-10-28 140427.png" class="weapon-img" alt="Shop Map" />
+    </div>
+  </section>
+
+  <!-- WEAPONS -->
+  <section id="weapons" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <button class="btn ghost" data-nav="home">← Back</button>
+      <h2>Available Weapons & Equipment</h2>
+    </div>
+
+    <div class="card p-20 controls" style="margin-bottom:14px">
+      <input id="q" class="input" placeholder="Search name, type, note…" />
+      <select id="ammo" class="select"></select>
+    </div>
+
+    <div class="grid cols-2" id="grid"></div>
+    <p id="none" class="muted" style="display:none;margin-top:8px">No items match that search. Try clearing filters.</p>
+  </section>
+</main>
+
+<footer>
+  © <span id="year"></span> Good Gaming Community • VEIN Outposts • Pricing derived from approximate real-world counterparts; adjusted for condition & scarcity.
+</footer>
+
+<script>
+/* ---------- DATA (filenames must exist under /images) ---------- */
+const INVENTORY = [
+  {name:"Wolfram 17", image:"images/Wolfram_17.webp", type:"Pistol (semi-auto)", ammo:"9mm Round", capacity:17, magazine:true, rpm:800, damage:"22 HP", conditionPct:100, msrpUSD:600, scarcity:"common", notes:"Beautiful and blocky."},
+  {name:"UN Fifty Seven", image:"images/UN_Fifty_Seven.webp", type:"Pistol", ammo:"5.7×28mm Round", capacity:20, magazine:true, rpm:800, damage:"32 HP", conditionPct:79, msrpUSD:1300, scarcity:"rare", notes:"Fires a rare type of ammunition. European designed."},
+  {name:"UN P9", image:"images/P9.webp", type:"SMG (bullpup compact)", ammo:"5.7×28mm Round", capacity:50, magazine:true, rpm:950, dps:507, damage:"32 HP", conditionPct:31, msrpUSD:1800, scarcity:"rare", notes:"A compact bullpup submachine gun."},
+  {name:"Taser", image:"images/Taser.png", type:"Taser", ammo:"Taser Cartridge", capacity:1, magazine:false, damage:"100 HP (non-lethal)", conditionPct:100, msrpUSD:450, scarcity:"uncommon", notes:"Causes targets to go unconscious."},
+  {name:"Sanwerk SRG", image:"images/Sanwerk_SRG.webp", type:"Shotgun (bullpup)", ammo:"12 Gauge Round", magazine:true, damage:"96 HP", conditionPct:100, msrpUSD:850, scarcity:"uncommon", notes:"A modern bullpup-style shotgun."},
+  {name:"N870", image:"images/N870_gun.png", type:"Shotgun (pump)", ammo:"12 Gauge Round", magazine:false, damage:"96 HP", conditionPct:100, msrpUSD:550, scarcity:"common", notes:"Stopping power."},
+  {name:"R&F MP5", image:"images/RF_MP5.webp", type:"SMG", ammo:"9mm Round", capacity:30, magazine:true, rpm:800, dps:287, damage:"22 HP", conditionPct:100, msrpUSD:2900, scarcity:"rare", notes:"A light SMG."},
+  {name:"N4", image:"images/Gun_N4.png", type:"Rifle (5.56)", ammo:"5.56mm Round", capacity:30, magazine:true, rpm:800, dps:333, damage:"25 HP", conditionPct:100, msrpUSD:1700, scarcity:"uncommon", notes:"It's pretty ubiquitous."},
+  {name:"N1903", image:"images/N1903.webp", type:"Rifle (bolt-action)", ammo:"7.62mm Round", capacity:5, magazine:false, damage:"25 HP", conditionPct:100, msrpUSD:1200, scarcity:"uncommon", notes:"A popular rifle used in World War I."},
+  {name:"Mosin-Nagant", image:"images/Mosin_Nagant.webp", type:"Rifle (bolt-action)", ammo:"7.62mm Round", capacity:5, magazine:false, damage:"25 HP", conditionPct:97, msrpUSD:450, scarcity:"common", notes:"An old but popular bolt-action rifle."},
+  {name:"Flare Gun", image:"images/Flare_Gun.webp", type:"Signaling pistol", ammo:"Flare", capacity:1, magazine:false, damage:"—", conditionPct:100, msrpUSD:100, scarcity:"common", notes:"Used to signal. Visible at very long ranges."},
+  {name:"Eighty-Four", image:"images/Eigthy_Four.webp", type:"Anti-tank (single-use)", ammo:"Eighty-Four Round", capacity:1, magazine:false, damage:"— (explosive)", conditionPct:100, msrpUSD:2200, scarcity:"rare", notes:"Can only be fired once. Use it wisely."},
+  {name:"LoneStar Viper", image:"images/LoneStar_Viper.webp", type:".357 Magnum Revolver", ammo:".357 Magnum Round", capacity:6, magazine:false, damage:"40 HP", conditionPct:54, msrpUSD:900, scarcity:"uncommon", notes:"Yee haw!"},
+  {name:"LoneStar Police .38 Special", image:"images/LoneStar_Police_38_Special.webp", type:".38 Special Revolver", ammo:".38 Special Round", capacity:6, magazine:false, damage:"22 HP", conditionPct:100, msrpUSD:500, scarcity:"common", notes:"Classic service revolver."},
+  {name:"LoneStar 1911", image:"images/LoneStar_1911.webp", type:"Pistol (single-stack)", ammo:".45 ACP Round", capacity:8, magazine:true, damage:"22 HP", conditionPct:100, msrpUSD:900, scarcity:"uncommon", notes:"Old faithful."},
+  {name:"AK", image:"images/AK.webp", type:"Rifle (7.62)", ammo:"7.62mm Round", capacity:30, magazine:true, rpm:600, dps:250, damage:"25 HP", conditionPct:80, msrpUSD:1000, scarcity:"uncommon", notes:"A timeless classic."}
+];
+
+/* pricing */
+const SCARCITY = { common:1.0, uncommon:1.25, rare:1.6 };
+const AMMO_SUR = { "5.7×28mm Round":1.25, "Taser Cartridge":1.15, "Eighty-Four Round":1.5, "Flare":1.0 };
+const USD_TO_NOTES = 1.0;
+
+function apocPrice(item){
+  const base = (item.msrpUSD || 500) * USD_TO_NOTES;
+  const scarcity = SCARCITY[item.scarcity || "common"] || 1;
+  const ammo = AMMO_SUR[item.ammo] || 1;
+  const condition = Math.max(0.4, (item.conditionPct ?? 100)/100);
+  return Math.round(base * scarcity * ammo * condition);
+}
+
+/* UI */
+const yearEl = document.getElementById("year"); yearEl.textContent = new Date().getFullYear();
+const sections = { home: document.getElementById("home"), weapons: document.getElementById("weapons") };
+document.querySelectorAll("[data-nav]").forEach(b=> b.addEventListener("click", ()=>show(b.getAttribute("data-nav"))));
+function show(which){
+  sections.home.style.display = which==="home"?"block":"none";
+  sections.weapons.style.display = which==="weapons"?"block":"none";
+  document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("primary", b.getAttribute("data-nav")===which));
+}
+const grid = document.getElementById("grid");
+const none = document.getElementById("none");
+const q = document.getElementById("q");
+const ammoSel = document.getElementById("ammo");
+const ammoTypes = [...new Set(INVENTORY.map(i=>i.ammo))].sort();
+ammoSel.innerHTML = ["<option value='*'>All ammo types</option>", ...ammoTypes.map(a=>`<option>${a}</option>`)].join("");
+
+function render(){
+  const qv = q.value.trim().toLowerCase();
+  const av = ammoSel.value;
+  const items = INVENTORY.filter(i=>{
+    const text = `${i.name} ${i.type} ${i.ammo} ${i.notes}`.toLowerCase();
+    const passText = !qv || text.includes(qv);
+    const passAmmo = av==="*" || i.ammo===av;
+    return passText && passAmmo;
+  });
+
+  grid.innerHTML = items.map(i=>{
+    const price = apocPrice(i).toLocaleString();
+    const msrp = i.msrpUSD ? `$${i.msrpUSD.toLocaleString()}` : "—";
+    return `
+    <div class="card p-24">
+      ${i.image? `<img class="weapon-img" src="${i.image}" alt="${i.name}">` : ""}
+      <div style="display:flex;justify-content:space-between;gap:12px;margin-top:12px">
+        <div><h3>${i.name}</h3><div class="muted" style="font-size:14px">${i.type}</div></div>
+        <div class="chip">${i.ammo}</div>
+      </div>
+      <div class="grid" style="grid-template-columns:repeat(4,1fr); margin-top:10px">
+        ${i.capacity!=null? spec("Capacity", i.capacity):""}
+        ${i.rpm? spec("RPM", i.rpm):""}
+        ${i.dps? spec("DPS", i.dps):""}
+        ${spec("Damage", i.damage || "—")}
+        ${spec("Condition", (i.conditionPct ?? 100)+"%")}
+      </div>
+      <div class="grid" style="grid-template-columns:repeat(3,1fr); margin-top:10px">
+        ${spec("MSRP (pre-war)", msrp)}
+        ${spec("Outpost Price", "₦"+price)}
+        ${spec("Scarcity", (i.scarcity||"common").toUpperCase())}
+      </div>
+      ${i.notes? `<p class="muted" style="margin-top:10px">${i.notes}</p>`: ""}
+    </div>`;
+  }).join("");
+
+  none.style.display = items.length? "none":"block";
+}
+function spec(label, value){return `<div class="spec"><label>${label}</label><div class="v">${value}</div></div>`}
+
+q.addEventListener("input", render);
+ammoSel.addEventListener("change", render);
+render();
+</script>
+</body>
+</html>
