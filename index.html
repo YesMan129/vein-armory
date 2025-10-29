@@ -26,6 +26,7 @@ header{position:sticky;top:0;backdrop-filter:blur(8px);background:rgba(0,0,0,.45
 .hero .content{position:absolute;left:0;right:0;bottom:0;padding:22px}
 .badge{color:var(--accent);font-family:ui-monospace,Menlo;font-size:11px;letter-spacing:.22em;text-transform:uppercase}
 h1{margin:6px 0 0;font-size:34px}
+h3{margin:0 0 2px}
 .muted{color:var(--muted)}
 .card{background:rgba(24,24,27,.75);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,.03)}
 .grid{display:grid;gap:16px}
@@ -34,11 +35,15 @@ h1{margin:6px 0 0;font-size:34px}
 .input,.select{background:rgba(0,0,0,.4);border:1px solid var(--ring);color:var(--text);padding:10px;border-radius:10px}
 .weapon-img{width:100%;border-radius:10px;object-fit:contain;border:1px solid var(--ring)}
 .spec{background:rgba(255,255,255,.03);padding:10px;border-radius:10px;border:1px solid var(--ring);font-size:13px}
+.spec .label{font-size:11px;color:var(--muted);text-transform:uppercase}
+.spec .value{margin-top:6px;font-weight:600}
 .chip{background:rgba(179,255,26,.08);color:#d8ff8c;padding:4px 8px;border-radius:999px;font-family:ui-monospace}
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{padding:8px 12px;border-radius:10px;border:1px solid var(--ring);cursor:pointer;background:transparent}
 .tab.active{background:var(--accent);color:#000;border-color:transparent}
 footer{margin-top:30px;color:var(--muted);text-align:center;padding:14px;border-top:1px solid var(--ring)}
+.note{font-size:12px;color:var(--muted);margin-top:6px}
+.price-bright{color:#fff}
 </style>
 </head>
 <body>
@@ -103,7 +108,7 @@ footer{margin-top:30px;color:var(--muted);text-align:center;padding:14px;border-
       </div>
     </div>
 
-    <!-- sub-tabs (added ammo + magazines) -->
+    <!-- tabs -->
     <div class="tabs" id="subtabs">
       <div class="tab active" data-cat="firearm">Firearms</div>
       <div class="tab" data-cat="melee">Melee</div>
@@ -122,9 +127,19 @@ footer{margin-top:30px;color:var(--muted);text-align:center;padding:14px;border-
 </footer>
 
 <script>
-/* ---------------- DATA ---------------- */
-/* fireams rarity / pricing: floor 7000, UN Fifty Seven locked 14000, Eighty-Four locked 100000.
-   Ammo per-round prices set; magazines priced from per-round * capacity * MAG_MULT. */
+/* ------------ YEAR & NAV ------------ */
+document.getElementById('year').textContent = new Date().getFullYear();
+const sections = { home: document.getElementById('home'), weapons: document.getElementById('weapons') };
+function show(which){ sections.home.style.display = which==='home' ? 'block':'none'; sections.weapons.style.display = which==='weapons' ? 'block':'none'; }
+document.querySelectorAll('[data-nav]').forEach(b=> b.addEventListener('click', ()=>show(b.getAttribute('data-nav'))));
+
+/* ------------ INVENTORY ------------ */
+/* Firearms: rarity pricing with floor 7000; UN Fifty Seven locked to 14000; Eighty-Four locked to 100000
+   Melee: cheap static msrp
+   Explosives: fixed outpostPrice
+   Ammo: per-round price * count; 5.7×28mm high; 84mm rocket = 50k
+   Magazines: price = per-round * capacity * MAG_MULT (cheaper than raw bullets)
+*/
 const INVENTORY = [
   // FIREARMS
   {cat:"firearm", name:"Wolfram 17", image:"images/Wolfram_17.webp", type:"Pistol (semi-auto)", ammo:"9mm Round", capacity:17, rpm:800, damage:"22 HP", scarcity:"common", notes:"Beautiful and blocky."},
@@ -137,32 +152,34 @@ const INVENTORY = [
   {cat:"firearm", name:"N4", image:"images/Gun_N4.png", type:"Rifle (5.56)", ammo:"5.56mm Round", capacity:30, rpm:800, scarcity:"uncommon", notes:"Pretty ubiquitous."},
   {cat:"firearm", name:"N1903", image:"images/N1903.webp", type:"Rifle (bolt-action)", ammo:"7.62mm Round", capacity:5, scarcity:"uncommon", notes:"Popular WWI rifle."},
   {cat:"firearm", name:"Mosin-Nagant", image:"images/Mosin_Nagant.webp", type:"Rifle (bolt-action)", ammo:"7.62mm Round", capacity:5, scarcity:"common", notes:"Surplus bolt-action rifle."},
-  // launcher
+  {cat:"firearm", name:"AK", image:"images/AK.webp", type:"Rifle (7.62)", ammo:"7.62mm Round", capacity:30, rpm:600, scarcity:"uncommon", notes:"A timeless classic."},
+
+  // SPECIAL FIREARM (fixed price)
   {cat:"firearm", name:"Eighty-Four", image:"images/Eigthy_Four.webp", type:"Anti-tank (single-use)", ammo:"Eighty-Four Round", scarcity:"rare", notes:"Single-use AT tube.", outpostPrice:100000},
 
   // MELEE
   {cat:"melee", name:"Combat Knife", image:"images/320px-Combat_Knife.webp", type:"Bladed", notes:"Basic Cutting / Can Opener / Knife. Swing 0.6s. DMG 17. DPS 31.", msrpUSD:80, weight:"1.1 kg"},
   {cat:"melee", name:"Machete", image:"images/320px-Machete.webp", type:"Bladed", notes:"Large machete. Weight 7.5 lbs (3.4 kg).", msrpUSD:120},
-  {cat:"melee", name:"Crowbar", image:"images/320px-Crowbar.png", type:"Blunt", notes:"Swing 0.7s • DMG 11 • DPS 15 • Can opener.", msrpUSD:60},
+  {cat:"melee", name:"Crowbar", image:"images/320px-Crowbar.webp", type:"Blunt", notes:"Swing 0.7s • DMG 11 • DPS 15 • Can opener.", msrpUSD:60},
 
-  // EXPLOSIVES
+  // EXPLOSIVES (fixed prices)
   {cat:"explosive", name:"Dynamite", image:"images/320px-Dynamite.webp", type:"Explosive", tooltip:"A stick of dynamite.", notes:"Ignition 3.0s • Base DMG 100 HP.", outpostPrice:10000},
   {cat:"explosive", name:"Dynamite Pack", image:"images/320px-Dynamite_Pack.webp", type:"Explosive", tooltip:"Three sticks of dynamite.", notes:"Base raiding • Ignition 3.0s • Base DMG 1000 HP.", outpostPrice:50000},
-  {cat:"explosive", name:"Frag Grenade", image:"images/320px-Frag_Grenade.webp", type:"Explosive", tooltip:"A fragmentation grenade.", notes:"Base raiding • Ignition 3.0s • Base DMG 500 HP.", outpostPrice:50000},
+  {cat:"explosive", name:"Frag Grenade", image:"images/320px-Frag_Grenade.webp", type:"Explosive", tooltip:"A fragmentation grenade.", notes:"Base raiding • Ignition 3.0s • Base DMG 500 HP.", outpostPrice:75000},
 
-  // AMMO (per-round prices)
-  {cat:"ammo", name:"9mm Round", image:"images/320px-9mm_ammo.png", perRound:25,  count:50, boxNote:"A box of 9mm rounds.", weapons:"R&F MP5, Wolfram 17", weight:"0.0 kg"},
-  {cat:"ammo", name:".38 Special Round", image:"images/320px-38_Special_Round.webp", perRound:25,  count:20, boxNote:"A box of .38 Special rounds.", weapons:"—", weight:"0.0 kg"},
-  {cat:"ammo", name:".45 ACP Round", image:"images/320px-45_ACP_Rounds.webp", perRound:45,  count:13, boxNote:"A box of .45 ACP rounds.", weapons:"LoneStar 1911", weight:"0.01 kg"},
-  {cat:"ammo", name:"5.56mm Round", image:"images/320px-556_Round.webp", perRound:50, count:10, boxNote:"A box of 5.56mm rounds.", weapons:"N4", weight:"0.0 kg"},
-  {cat:"ammo", name:"7.62mm Round", image:"images/320px-7.webp", perRound:50, count:21, boxNote:"A box of 7.62mm rounds.", weapons:"AK, Mosin Nagant, N1903", weight:"0.0 kg"},
-  {cat:"ammo", name:"12 Gauge Round", image:"images/320px-12gauge.webp", perRound:75, count:20, boxNote:"A box of 12 Gauge rounds.", weapons:"Sanwerk SRG, N870", weight:"0.0 kg"},
-  {cat:"ammo", name:"5.7×28mm Round", image:"images/320px-57x28mm.webp", perRound:75, count:1,  boxNote:"A box of 5.7×28mm rounds.", weapons:"UN Fifty Seven, UN P9", weight:"0.0 kg"},
-  {cat:"ammo", name:"Flare", image:"images/320px-Flare_ammo.webp", perRound:10, count:1,  boxNote:"For use with a flare gun. Highly flammable rounds!", weapons:"Flare Gun", weight:"0.0 kg"},
-  {cat:"ammo", name:"Taser Cartridge", image:"images/320px-Taser_Catridge.webp", perRound:10, count:1,  boxNote:"Live taser cartridges.", weapons:"Taser", weight:"0.0 kg"},
-  {cat:"ammo", name:"Eighty-Four Round", image:"images/320px-84_round.webp", perRound:50000, count:1, boxNote:"An 84mm explosive shell.", weapons:"Eighty-Four", weight:"0.4 kg"},
+  // AMMO (per-round pricing)
+  {cat:"ammo", name:"9mm Round", image:"images/320px-9mm_ammo.png", perRound:800,  count:50, boxNote:"A box of 9mm rounds.", weapons:"R&F MP5, Wolfram 17", weight:"0.0 kg"},
+  {cat:"ammo", name:".38 Special Round", image:"images/320px-38_Special_Round.webp", perRound:800,  count:20, boxNote:"A box of .38 Special rounds.", weapons:"—", weight:"0.0 kg"},
+  {cat:"ammo", name:".45 ACP Round", image:"images/320px-45_ACP_Rounds.webp", perRound:900,  count:13, boxNote:"A box of .45 ACP rounds.", weapons:"LoneStar 1911", weight:"0.01 kg"},
+  {cat:"ammo", name:"5.56mm Round", image:"images/320px-556_Round.webp", perRound:1500, count:10, boxNote:"A box of 5.56mm rounds.", weapons:"N4", weight:"0.0 kg"},
+  {cat:"ammo", name:"7.62mm Round", image:"images/320px-7.webp", perRound:1800, count:21, boxNote:"A box of 7.62mm rounds.", weapons:"AK, Mosin Nagant, N1903", weight:"0.0 kg"},
+  {cat:"ammo", name:"12 Gauge Round", image:"images/320px-12gauge.webp", perRound:1200, count:20, boxNote:"A box of 12 Gauge rounds.", weapons:"Sanwerk SRG, N870", weight:"0.0 kg"},
+  {cat:"ammo", name:"5.7×28mm Round", image:"images/320px-57x28mm.webp", perRound:3000, count:1,  boxNote:"A box of 5.7×28mm rounds.", weapons:"UN Fifty Seven, UN P9", weight:"0.0 kg"},
+  {cat:"ammo", name:"Flare", image:"images/320px-Flare_ammo.webp", perRound:1000, count:1,  boxNote:"For use with a flare gun. Highly flammable rounds!", weapons:"Flare Gun", weight:"0.0 kg"},
+  {cat:"ammo", name:"Taser Cartridge", image:"images/320px-Taser_Catridge.webp", perRound:2000, count:1,  boxNote:"Live taser cartridges.", weapons:"Taser", weight:"0.0 kg"},
+  {cat:"ammo", name:"Eighty-Four Round", image:"", perRound:50000, count:1, boxNote:"An 84mm explosive shell.", weapons:"Eighty-Four", weight:"0.4 kg"},
 
-  // MAGAZINES (new)
+  // MAGAZINES
   {cat:"magazine", name:"Wolfram 17 Magazine - 17 Round", image:"images/320px-Wolfram_magazine.webp", ammoType:"9mm Round", capacity:17, notes:"A Wolfram 17 magazine. Holds 9mm rounds.", weight:"0.09 kg"},
   {cat:"magazine", name:"UN P9 Magazine - 50 Round", image:"images/320px-UN_P9_Magazine.webp", ammoType:"5.7×28mm Round", capacity:50, notes:"A P9 magazine. Holds 5.7×28mm rounds.", weight:"0.09 kg"},
   {cat:"magazine", name:"R&F MP5 Magazine - 30 Round", image:"images/320px-R&F_MP5_Magazine.png", ammoType:"9mm Round", capacity:30, notes:"An MP5 magazine. Holds 9mm rounds.", weight:"0.09 kg"},
@@ -172,54 +189,36 @@ const INVENTORY = [
   {cat:"magazine", name:"AK Magazine - 30 Round", image:"images/320px-AK_Magazine.webp", ammoType:"7.62mm Round", capacity:30, notes:"An AK magazine. Holds 7.62mm rounds.", weight:"0.2 kg"}
 ];
 
-/* ---------------- PRICING RULES ---------------- */
-const FIREARM_MIN = 10000;
+/* ------------ PRICING ------------ */
+const FIREARM_MIN = 7000;
 const SCARCITY = { common:1.0, uncommon:1.2, rare:1.6 };
-const AMMO_SUR = { "5.7×28mm Round":0, "Taser Cartridge":0, "Eighty-Four Round":1.5 };
-
-/* MAG_MULT: magazines priced at per-round * capacity * multiplier (cheaper than raw bullets)
-   set to 0.7 so buying a magazine saves ~30% vs buying each bullet individually. */
-const MAG_MULT = 0.7;
+const AMMO_SUR = { "5.7×28mm Round":1.25, "Taser Cartridge":1.15, "Eighty-Four Round":1.5 };
+const MAG_MULT = 0.7; // magazines cheaper than buying loose rounds
 
 function findAmmoByName(name){
-  return INVENTORY.find(i => i.cat==='ammo' && i.name.toLowerCase() === name.toLowerCase());
+  return INVENTORY.find(i => i.cat==='ammo' && i.name.toLowerCase() === String(name||'').toLowerCase());
 }
 
-function apocPrice(item){
-  // explicit outpost price (explosives & launcher)
-  if (item.outpostPrice) return Math.round(item.outpostPrice);
-
-  // ammo boxes: perRound * count
-  if (item.cat === 'ammo') return Math.round((item.perRound||0) * (item.count||1));
-
-  // magazines: find ammo per-round and compute
-  if (item.cat === 'magazine'){
-    const ammoName = item.ammoType || item.ammo || '';
-    const amm = findAmmoByName(ammoName);
-    if (amm && amm.perRound) {
-      return Math.round(amm.perRound * (item.capacity||1) * MAG_MULT);
-    }
-    // fallback: small flat price
-    return Math.round((item.capacity||1) * 1000 * MAG_MULT);
+/* Outpost price rules */
+function outpostPrice(item){
+  if (item.outpostPrice) return Math.round(item.outpostPrice); // fixed price items (explosives/launcher)
+  if (item.cat === "ammo") return Math.round((item.perRound||0) * (item.count||1));
+  if (item.cat === "magazine"){
+    const amm = findAmmoByName(item.ammoType || item.ammo);
+    if (amm && amm.perRound) return Math.round(amm.perRound * (item.capacity||1) * MAG_MULT);
+    return Math.round((item.capacity||1) * 1000 * MAG_MULT); // fallback
   }
-
-  if (item.name === 'UN Fifty Seven') return 14000; // locked
-  if (item.cat === 'firearm'){
-    const rarity = SCARCITY[item.scarcity || 'common'] || 1;
-    const ammo = AMMO_SUR[item.ammo] || 1;
+  if (item.name === "UN Fifty Seven") return 14000;
+  if (item.cat === "firearm"){
+    const rarity = SCARCITY[item.scarcity || "common"] || 1;
+    const ammo   = AMMO_SUR[item.ammo] || 1;
     return Math.round(FIREARM_MIN * rarity * ammo);
   }
-
-  if (item.cat === 'melee') return Math.round(item.msrpUSD || 100);
+  if (item.cat === "melee") return Math.round(item.msrpUSD || 100);
   return Math.round(item.msrpUSD || FIREARM_MIN);
 }
 
-/* --------------- UI --------------- */
-document.getElementById('year').textContent = new Date().getFullYear();
-const sections = { home: document.getElementById('home'), weapons: document.getElementById('weapons') };
-function show(which){ sections.home.style.display = which==='home'?'block':'none'; sections.weapons.style.display = which==='weapons'?'block':'none'; }
-document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click', ()=>show(b.getAttribute('data-nav'))));
-
+/* ------------ UI / Search / Filters ------------ */
 const q = document.getElementById('q');
 const ammoSelWrap = document.querySelector('.controls');
 const ammoSel = document.getElementById('ammo');
@@ -232,18 +231,22 @@ document.querySelectorAll('#subtabs .tab').forEach(t=>{
     document.querySelectorAll('#subtabs .tab').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     activeCategory = t.getAttribute('data-cat');
-    // visibility: ammo filter only for firearms
-    ammoSelWrap.style.visibility = (activeCategory==='firearm') ? 'visible' : 'hidden';
+    // show ammo filter only on Firearms
+    document.querySelector('.controls').style.visibility = (activeCategory==='firearm') ? 'visible' : 'hidden';
     render();
   });
 });
 
-// build ammo filter options from firearm ammo types
+// Build ammo dropdown from firearms only
 function buildAmmoOptions(){
   const ammoTypes = [...new Set(INVENTORY.filter(i=>i.cat==='firearm').map(i=>i.ammo).filter(Boolean))].sort();
   ammoSel.innerHTML = ["<option value='*'>All ammo types</option>", ...ammoTypes.map(a=>`<option>${a}</option>`)].join('');
 }
 buildAmmoOptions();
+
+function spec(label, value){
+  return `<div class="spec"><div class="label">${label}</div><div class="value">${value}</div></div>`;
+}
 
 function render(){
   const qv = q.value.trim().toLowerCase();
@@ -251,22 +254,24 @@ function render(){
 
   const items = INVENTORY.filter(i=>{
     if (i.cat !== activeCategory) return false;
-    const searchText = `${i.name} ${i.type||''} ${i.ammo||i.ammoType||''} ${i.notes||''} ${i.boxNote||''}`.toLowerCase();
-    const passText = !qv || searchText.includes(qv);
-    const passAmmo = activeCategory!=='firearm' || av==='*' || ((i.ammo || i.ammoType) && (i.ammo || i.ammoType) === av);
+    const text = `${i.name} ${i.type||''} ${i.ammo||i.ammoType||''} ${i.notes||''} ${i.boxNote||''}`.toLowerCase();
+    const passText = !qv || text.includes(qv);
+    const passAmmo = activeCategory!=='firearm' || av==='*' || (i.ammo && i.ammo===av);
     return passText && passAmmo;
   });
 
   grid.innerHTML = items.map(i=>{
-    const price = apocPrice(i).toLocaleString();
-    const msrpLabel = (i.cat==='ammo' && i.perRound) ? `₦${i.perRound.toLocaleString()}/rd` : (i.msrpUSD ? `$${i.msrpUSD}` : '—');
-    const rightChip = (i.cat==='ammo') ? (i.count? `${i.count} rd${i.count>1?'s':''}` : '1 rd') : ((i.cat==='magazine')?(`${i.capacity} rd`):(i.ammo||i.type||''));
+    const price = outpostPrice(i);
+    const sell = Math.round(price * 0.4);
+    const rightChip =
+      i.cat==='ammo' ? (i.count? `${i.count} rd${i.count>1?'s':''}` : '1 rd') :
+      i.cat==='magazine' ? (`${i.capacity||''} rd`) :
+      (i.ammo || i.type || '');
 
-    // details
     let details = "";
-    if (i.cat === 'ammo'){
+    if (i.cat === "ammo"){
       details = `${spec('Per Round', '₦'+(i.perRound||0).toLocaleString())}${spec('Box Size', i.count||1)}${spec('For', i.weapons||'—')}`;
-    } else if (i.cat === 'magazine'){
+    } else if (i.cat === "magazine"){
       details = `${spec('Caliber', i.ammoType||'—')}${spec('Capacity', i.capacity||1)}${spec('Weight', i.weight||'—')}`;
     } else {
       details = `${i.capacity!=null? spec('Capacity', i.capacity):''}${i.rpm? spec('RPM', i.rpm):''}${i.dps? spec('DPS', i.dps):''}${i.damage? spec('Damage', i.damage):''}${i.weight? spec('Weight', i.weight):''}`;
@@ -276,7 +281,7 @@ function render(){
     <div class="card">
       ${i.image? `<img src="${i.image}" alt="${i.name}" class="weapon-img">` : ''}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-        <div><strong style="font-size:16px">${i.name}</strong><div class="muted" style="font-size:13px">${i.type||''}</div></div>
+        <div><h3>${i.name}</h3><div class="muted" style="font-size:13px">${i.type||''}</div></div>
         <div class="chip">${rightChip}</div>
       </div>
 
@@ -285,21 +290,20 @@ function render(){
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">
-        ${spec(i.cat==='ammo' ? 'Label' : 'MSRP (pre-war)', msrpLabel)}
-        ${spec(i.cat==='ammo' ? 'Box Price' : 'Outpost Price', '₦'+price)}
+        ${spec('Outpost Price', `<span class="price-bright">₦${price.toLocaleString()}</span>`)}
+        ${spec('Sell Price', `<span class="price-bright">₦${sell.toLocaleString()}</span>`)}
         ${spec('Category', (i.cat||'').toUpperCase())}
       </div>
 
-      ${i.boxNote? `<p class="muted" style="margin-top:10px">${i.boxNote}</p>` : ''}
-      ${i.tooltip? `<p class="muted" style="margin-top:8px">${i.tooltip}</p>` : ''}
-      ${i.notes? `<p class="muted" style="margin-top:8px">${i.notes}</p>` : ''}
+      <p class="note">Vendors buy at 40% of listed value.</p>
+      ${i.boxNote? `<p class="muted" style="margin-top:6px">${i.boxNote}</p>` : ''}
+      ${i.tooltip? `<p class="muted" style="margin-top:6px">${i.tooltip}</p>` : ''}
+      ${i.notes? `<p class="muted" style="margin-top:6px">${i.notes}</p>` : ''}
     </div>`;
   }).join('');
 
-  none.style.display = items.length ? 'none' : 'block';
+  none.style.display = items.length ? 'none':'block';
 }
-
-function spec(label, value){ return `<div class="spec"><div style="font-size:11px;color:var(--muted);text-transform:uppercase">${label}</div><div style="margin-top:6px;font-weight:600">${value}</div></div>` }
 
 q.addEventListener('input', render);
 ammoSel.addEventListener('change', render);
