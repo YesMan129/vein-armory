@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GoodGaming Community Stores — VEIN Armory</title>
+<style>
+:root{
+  --bg:#000; --muted:#9ca3af; --text:#e5e7eb; --accent:#b3ff1a; --card:#161616;
+  --ring:rgba(255,255,255,.06);
+  --bm-accent:#ff4040; --bm-accent-2:#00ffa6; /* black market visual accents */
+}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial;line-height:1.45;overflow-x:hidden}
+.wrap{max-width:1120px;margin:0 auto;padding:24px}
+.bg{position:fixed;inset:0;z-index:-5;background:
+  radial-gradient(60% 60% at 50% 20%, rgba(120,120,120,.18), rgba(10,10,10,.96)),
+  linear-gradient(#0b0b0b,#000)}
+.grime,.dust{position:fixed;inset:0;z-index:-4;pointer-events:none}
+.grime{mix-blend-mode:overlay;opacity:.32;background:
+  repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 2px,transparent 2px 6px),
+  url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320"><rect width="100%" height="100%" fill="black"/><circle cx="40" cy="60" r="2" fill="white" fill-opacity="0.04"/><circle cx="160" cy="140" r="1" fill="white" fill-opacity="0.03"/></svg>') repeat}
+.dust{opacity:.16;background:radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px);background-size:3px 3px}
+
+/* Torchlight & CRT removed per request */
+
+/* Header/Nav */
+header{position:sticky;top:0;backdrop-filter:blur(8px);background:rgba(0,0,0,.45);border-bottom:1px solid var(--ring);z-index:10}
+.nav{display:flex;align-items:center;gap:12px;padding:12px 24px}
+.brand{font-weight:800;letter-spacing:.5px;filter:drop-shadow(0 0 4px rgba(179,255,26,.25))}
+.neon{color:var(--accent);text-shadow:
+  0 0 4px #b3ff1a, 0 0 10px #b3ff1a, 0 0 20px rgba(179,255,26,.6)}
+.flicker{animation:flicker 3.2s infinite steps(60)}
+@keyframes flicker{
+  0%,18%,22%,25%,53%,57%,100%{opacity:1}
+  20%,24%,55%{opacity:.55}
+}
+
+.btn{border:1px solid var(--ring);background:transparent;color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer;transition:.2s transform, .2s box-shadow}
+.btn.primary{background:var(--accent);color:#000;border-color:transparent;box-shadow:0 0 12px rgba(179,255,26,.4)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.hero{border-radius:18px;overflow:hidden;border:1px solid var(--ring);position:relative}
+.hero img{width:100%;height:52vh;object-fit:cover;display:block}
+.overlay{position:absolute;inset:0;background:linear-gradient(to top,#000,rgba(0,0,0,.45),transparent)}
+.hero .content{position:absolute;left:0;right:0;bottom:0;padding:22px}
+.badge{color:var(--accent);font-family:ui-monospace,Menlo;font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+h1{margin:6px 0 0;font-size:34px}
+h3{margin:0 0 2px}
+.muted{color:var(--muted)}
+
+.card{background:rgba(24,24,27,.75);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,.03);transition:.18s transform, .18s box-shadow, .18s border-color}
+.card:hover{transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 16px rgba(179,255,26,.08);border-color:rgba(179,255,26,.18)}
+.grid{display:grid;gap:16px}
+@media(min-width:900px){.grid.cols-3{grid-template-columns:repeat(3,1fr)} .grid.cols-2{grid-template-columns:repeat(2,1fr)}}
+.controls{display:flex;gap:12px;align-items:center}
+.input,.select{background:rgba(0,0,0,.4);border:1px solid var(--ring);color:var(--text);padding:10px;border-radius:10px}
+.weapon-img{width:100%;border-radius:10px;object-fit:contain;border:1px solid var(--ring);background:rgba(0,0,0,.35)}
+.spec{background:rgba(255,255,255,.03);padding:10px;border-radius:10px;border:1px solid var(--ring);font-size:13px}
+.spec .label{font-size:11px;color:var(--muted);text-transform:uppercase}
+.spec .value{margin-top:6px;font-weight:600}
+.chip{background:rgba(179,255,26,.08);color:#d8ff8c;padding:4px 8px;border-radius:999px;font-family:ui-monospace}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{padding:8px 12px;border-radius:10px;border:1px solid var(--ring);cursor:pointer;background:transparent;transition:.18s background,.18s color,.18s transform}
+.tab.active{background:var(--accent);color:#000;border-color:transparent;transform:translateY(-1px)}
+footer{margin-top:30px;color:var(--muted);text-align:center;padding:14px;border-top:1px solid var(--ring)}
+.note{font-size:12px;color:var(--muted);margin-top:6px}
+.price-bright{color:#fff}
+
+/* Loading screen */
+#boot{
+  position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+  transition:opacity .5s ease-out;
+}
+#boot.hide{opacity:0;pointer-events:none}
+#boot .logo{font-weight:900;font-size:20px;letter-spacing:.12em}
+.progress{width:min(520px,80vw);height:10px;border:1px solid #1f2937;border-radius:999px;overflow:hidden;background:#0a0a0a}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#b3ff1a, #eaff9f);box-shadow:0 0 18px rgba(179,255,26,.6) inset;transition:width .5s}
+
+/* Terminal overlay when entering Shop */
+#terminal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9998;display:none;align-items:center;justify-content:center}
+.tty{width:min(720px,90vw);height:min(360px,60vh);border:1px solid var(--ring);border-radius:12px;background:#0b0b0b;padding:18px 16px;font-family:ui-monospace,Consolas,Menlo;color:#c7f36d;box-shadow:0 0 24px rgba(179,255,26,.2)}
+.tty .bar{display:flex;gap:6px;margin-bottom:10px}
+.tty .dot{width:10px;height:10px;border-radius:50%}
+.tty .dot.r{background:#ff5f56}.tty .dot.y{background:#ffbd2e}.tty .dot.g{background:#27c93f}
+.tty pre{white-space:pre-wrap;line-height:1.35;margin:0;height:calc(100% - 16px);overflow:auto}
+
+/* Modal Item Detail */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:50}
+.modal-card{background:#0f0f10;border:1px solid var(--ring);border-radius:16px;width:min(920px,92vw);max-height:86vh;overflow:auto;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.modal-close{position:sticky;top:0;display:flex;justify-content:flex-end}
+.modal-close .btn{background:#111;border-color:#222}
+
+/* Featured item banner */
+.featured{border:1px dashed rgba(179,255,26,.35);border-radius:14px;padding:16px;background:linear-gradient(180deg,rgba(179,255,26,.05),rgba(0,0,0,.15))}
+.featured h3{display:flex;align-items:center;gap:8px}
+.featured .tag{font-size:11px;letter-spacing:.16em;border:1px solid rgba(179,255,26,.35);padding:2px 6px;border-radius:999px;color:#dfff7f}
+
+/* NPC popup */
+.npc{position:sticky;top:64px;z-index:9;margin-bottom:10px}
+.npc .bubble{border:1px solid rgba(179,255,26,.25);background:rgba(20,20,20,.85);backdrop-filter:blur(4px);border-radius:12px;padding:10px 12px;display:flex;gap:8px;align-items:center;animation:npcfade .6s ease}
+.npc .name{color:#dfff7f;font-family:ui-monospace}
+@keyframes npcfade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* SALE neon banner */
+.sale-badge{
+  position:absolute;top:10px;left:-6px;z-index:2;
+  background:linear-gradient(90deg,#b3ff1a,#eaff9f);
+  color:#000;font-weight:800;font-size:12px;letter-spacing:.08em;
+  padding:6px 10px;border-radius:8px;
+  box-shadow:0 0 16px rgba(179,255,26,.6), 0 0 32px rgba(0,0,0,.35);
+  transform:rotate(-3deg)
+}
+
+/* Card pulse */
+@keyframes pulseGlow{
+  0%,100%{box-shadow:0 0 0 rgba(179,255,26,0);border-color:rgba(179,255,26,.08)}
+  50%{box-shadow:0 0 24px rgba(179,255,26,.35);border-color:rgba(179,255,26,.45)}
+}
+.pulse{animation:pulseGlow 1.5s ease-in-out}
+
+/* CRT overlay removed */
+
+/* ===== Black Market styles (cinematic & dark) ===== */
+.bm-hero{position:relative;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
+.bm-hero img{width:100%;height:52vh;object-fit:cover;filter:contrast(1.05) saturate(0.9) brightness(0.8)}
+.bm-hero::after{
+  content:"";position:absolute;inset:0;
+  background:
+   radial-gradient(60% 60% at 50% 30%, rgba(0,0,0,.35), rgba(0,0,0,.85)),
+   linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.8));
+  box-shadow:inset 0 0 80px rgba(255,64,64,.22), inset 0 0 120px rgba(0,255,166,.12);
+}
+.bm-title{position:absolute;left:20px;bottom:18px}
+.bm-title .tag{display:inline-block;background:rgba(255,64,64,.15);border:1px solid rgba(255,64,64,.4);color:#ffb3b3;padding:4px 8px;border-radius:10px;font-size:12px;letter-spacing:.14em}
+.bm-title h1{margin:8px 0 0;font-size:34px;text-shadow:0 0 12px rgba(255,64,64,.35), 0 0 24px rgba(0,255,166,.25)}
+
+.card.bm{
+  background:rgba(10,10,12,.85);
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 0 30px rgba(255,64,64,.08), 0 0 24px rgba(0,255,166,.06) inset;
+}
+.card.bm:hover{border-color:rgba(255,64,64,.3);box-shadow:0 12px 60px rgba(255,64,64,.25), 0 0 24px rgba(0,255,166,.18) inset}
+
+.bm-chip{background:rgba(255,64,64,.12);color:#ffd1d1;border:1px solid rgba(255,64,64,.35)}
+.bm-npc .bubble{border-color:rgba(255,64,64,.25);background:rgba(10,10,10,.9)}
+.bm-btn{background:linear-gradient(90deg,var(--bm-accent),var(--bm-accent-2));color:#000;border:none}
+
+/* Promo card visible to everyone */
+.promo{
+  border:1px dashed rgba(179,255,26,.35);border-radius:14px;padding:16px;
+  background:linear-gradient(180deg,rgba(179,255,26,.05),rgba(0,0,0,.15));
+}
+</style>
+</head>
+<body>
+<!-- Atmosphere layers -->
+<div class="bg"></div>
+<div class="grime"></div>
+<div class="dust"></div>
+
+<!-- CRT overlay/toggle removed -->
+
+<!-- Loading Screen -->
+<div id="boot" aria-hidden="true">
+  <div class="logo neon flicker">GOODGAMING COMMUNITY STORES</div>
+  <div class="progress"><span id="bootbar"></span></div>
+  <div class="muted" style="font-family:ui-monospace">Initializing Outpost Database…</div>
+</div>
+
+<!-- Terminal overlay -->
+<div id="terminal" aria-hidden="true">
+  <div class="tty">
+    <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+    <pre id="ttylog"></pre>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" role="dialog" aria-modal="true" aria-label="Item details">
+  <div class="modal-card">
+    <div class="modal-close"><button class="btn" id="modalClose">✕ Close</button></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<header>
+  <div class="nav wrap">
+    <div class="brand neon flicker">☣ GoodGaming Community Stores</div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn primary" data-nav="home">Home</button>
+      <button class="btn" data-nav="weapons" id="navShop">Shop</button>
+      <a class="btn" href="https://discord.gg/tFmUgtDZp8" target="_blank" rel="noopener">Discord ↗</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <img src="images/gunstore.png" alt="GoodGaming Armory — Dannemora" />
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="badge">Safe-Trade Outpost</div>
+        <h1 class="neon flicker">GoodGaming Community Stores — Dannemora</h1>
+        <p class="muted" style="max-width:760px">Fortified survivor market — verified weapons, attachments, and ammo. No scamming, no KOS on lot.</p>
+        <p class="muted" style="margin-top:8px"><strong>Store operated by Hugh Jackedman &amp; Billy Bob Jenkins.</strong></p>
+        <div style="margin-top:12px">
+          <button class="btn primary" id="enterShop">Enter Shop →</button>
+          <a class="btn" href="#map">Find on Map</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Item -->
+    <div style="margin-top:18px" class="featured" id="featured"></div>
+
+    <!-- Public Promo Card (visible to everyone) -->
+    <div class="promo" style="margin-top:18px">
+      <h3>Open Your Shop</h3>
+      <p class="muted" style="margin:.5rem 0">
+        Want to open your own shop? Contact <strong>Yes_Man</strong> to get your business featured on the GoodGaming community website.
+      </p>
+    </div>
+
+    <div style="margin-top:18px" class="card">
+      <h3>On-Site Rules</h3>
+      <ul class="muted" style="margin-top:8px">
+        <li>Respect safe-zone boundaries and staff.</li>
+        <li>Weapons unloaded inside. No discharging on lot.</li>
+        <li>Barter welcomed; scamming = ban.</li>
+        <li>IDs checked. Faction discounts at manager discretion.</li>
+      </ul>
+    </div>
+
+    <div id="map" class="card" style="margin-top:16px">
+      <h3>Location — Dannemora</h3>
+      <img src="images/Screenshot 2025-10-28 140427.png" alt="map" style="width:100%;border-radius:10px;margin-top:10px" />
+    </div>
+
+    <!-- Black Market Card (hidden until unlocked) -->
+    <div id="bmCardWrap" style="margin-top:18px;display:none">
+      <div class="card bm" style="overflow:hidden">
+        <div style="display:grid;grid-template-columns: 320px 1fr; gap:16px;align-items:center">
+          <div>
+            <img src="images/black_market.png" alt="Black Market" style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.06)">
+          </div>
+          <div>
+            <h3 style="margin:0 0 6px"><span style="color:var(--bm-accent)">BLACK MARKET</span> — Underground Network</h3>
+            <p class="muted">A hidden exchange for contracts, weapons, and illicit goods.</p>
+            <button class="btn bm-btn" id="enterBlackMarket">Enter Black Market →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section id="weapons" style="display:none">
+    <!-- NPC popup -->
+    <div class="npc"><div id="npcBubble" class="bubble"><span class="name">[Hugh Jackedman]</span> <span id="npcText">You got creds, you got guns. Don’t waste my time.</span></div></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;flex-wrap:wrap">
+      <div>
+        <button class="btn" onclick="show('home')">← Back</button>
+        <strong style="margin-left:12px;font-size:18px">GoodGaming Armory — Shop</strong>
+        <div style="margin-top:6px;color:var(--muted)">Tabs: Firearms / Melee / Explosives / Ammo / Magazines</div>
+      </div>
+      <div class="controls" style="flex-wrap:wrap">
+        <input id="q" class="input" placeholder="Search name, type, note…" style="width:280px" />
+        <select id="ammo" class="select"></select>
+        <select id="sort" class="select">
+          <option value="name">Sort: Name (A→Z)</option>
+          <option value="price">Sort: Price (Low→High)</option>
+          <option value="damage">Sort: Damage (High→Low)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs" id="subtabs">
+      <div class="tab active" data-cat="firearm">Firearms</div>
+      <div class="tab" data-cat="melee">Melee</div>
+      <div class="tab" data-cat="explosive">Explosives</div>
+      <div class="tab" data-cat="ammo">Ammo</div>
+      <div class="tab" data-cat="magazine">Magazines</div>
+    </div>
+
+    <div id="grid" class="grid cols-2"></div>
+    <p id="none" class="muted" style="display:none;margin-top:12px">No items match that search.</p>
+  </section>
+
+  <!-- BLACK MARKET SECTION (cinematic) -->
+  <section id="blackmarket" style="display:none">
+    <!-- top bar/dialogue -->
+    <div class="npc bm-npc"><div class="bubble"><span class="name">[Vex]</span> <span id="bmNpcText">Keep it quiet, buyer…</span></div></div>
+
+    <div class="bm-hero" style="margin-bottom:16px">
+      <img src="images/black_market.png" alt="Black Market Sign">
+      <div class="bm-title">
+        <span class="tag">⚒ UNDERGROUND HUB</span>
+        <h1 style="margin:8px 0 0">BLACK MARKET — Classified Traders</h1>
+        <div style="margin-top:10px">
+          <button class="btn" onclick="show('home')">← Back</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid cols-2">
+      <!-- Phil's Hitman Services -->
+      <div class="card bm">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div><h3>Phil’s Hitman Services</h3><div class="muted">Run by <strong>Phil Degrave</strong></div></div>
+          <div class="chip bm-chip">CONTRACTS</div>
+        </div>
+        <p class="muted">No witnesses. No refunds. Professional results guaranteed.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
+          <div class="spec"><div class="label">Base Contract</div><div class="value">₦ 10,000</div></div>
+          <div class="spec"><div class="label">High-Profile</div><div class="value">₦ 10,000</div></div>
+          <div class="spec"><div class="label">Discretion Fee</div><div class="value">₦ 100</div></div>
+        </div>
+        <p class="note" style="margin-top:8px">Availability rotates. Terms subject to outpost law.</p>
+        <div style="margin-top:10px">
+          <a class="btn bm-btn" href="https://discord.com/users/398096488192016384" target="_blank" rel="noopener">
+            Hire Service →
+          </a>
+        </div>
+      </div>
+
+      <!-- Expansion / Coming soon -->
+      <div class="card bm">
+        <h3>More businesses coming soon…</h3>
+        <p class="muted">Talk to <strong>Yes_Man</strong> to add your business to the Black Market.</p>
+        <div style="margin-top:10px"><button class="btn">Contact Yes_Man</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © <span id="year"></span> GoodGaming Community Stores — VEIN Outposts
+  <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap">
+    <span class="muted" style="font-size:12px">Access Code:</span>
+    <input id="unlock" class="input" placeholder="enter code…" style="width:180px"/>
+    <button id="unlockBtn" class="btn">Unlock</button>
+    <span id="unlockMsg" class="muted" style="font-size:12px"></span>
+  </div>
+</footer>
+
+<script>
+/* ------------ YEAR & NAV ------------ */
+document.getElementById('year').textContent = new Date().getFullYear();
+const sections = {
+  home: document.getElementById('home'),
+  weapons: document.getElementById('weapons'),
+  blackmarket: document.getElementById('blackmarket')
+};
+function show(which){
+  sections.home.style.display = which==='home' ? 'block':'none';
+  sections.weapons.style.display = which==='weapons' ? 'block':'none';
+  sections.blackmarket.style.display = which==='blackmarket' ? 'block':'none';
+}
+
+/* ------------ INVENTORY (prices as approved) ------------ */
+const INVENTORY = [
+  {cat:"firearm", name:"Wolfram 17", image:"images/Wolfram_17.webp", type:"Pistol (semi-auto)", ammo:"9mm Round", capacity:17, rpm:800, damage:"22 HP", scarcity:"common", notes:"Beautiful and blocky.", outpostPrice:3000},
+  {cat:"firearm", name:"UN Fifty Seven", image:"images/UN_Fifty_Seven.webp", type:"Pistol", ammo:"5.7×28mm Round", capacity:20, rpm:800, damage:"32 HP", scarcity:"rare", notes:"Fires a rare type of ammunition. European designed.", outpostPrice:4000},
+  {cat:"firearm", name:"UN P9", image:"images/P9.webp", type:"SMG (bullpup)", ammo:"5.7×28mm Round", capacity:50, rpm:950, damage:"32 HP", scarcity:"rare", notes:"Compact bullpup SMG.", outpostPrice:11200},
+  {cat:"firearm", name:"Taser", image:"images/Taser.png", type:"Taser", ammo:"Taser Cartridge", capacity:1, damage:"non-lethal", scarcity:"uncommon", notes:"Causes targets to go unconscious.", outpostPrice:1000},
+  {cat:"firearm", name:"Sanwerk SRG", image:"images/Sanwerk_SRG.webp", type:"Shotgun (bullpup)", ammo:"12 Gauge Round", scarcity:"uncommon", notes:"Modern bullpup shotgun.", outpostPrice:7000},
+  {cat:"firearm", name:"N870", image:"images/N870_gun.png", type:"Shotgun (pump)", ammo:"12 Gauge Round", scarcity:"common", notes:"Stopping power.", outpostPrice:5000},
+  {cat:"firearm", name:"R&F MP5", image:"images/RF_MP5.webp", type:"SMG", ammo:"9mm Round", capacity:30, rpm:800, scarcity:"rare", notes:"A light SMG.", outpostPrice:10000},
+  {cat:"firearm", name:"N4", image:"images/Gun_N4.png", type:"Rifle (5.56)", ammo:"5.56mm Round", capacity:30, rpm:800, scarcity:"uncommon", notes:"Pretty ubiquitous.", outpostPrice:11200},
+  {cat:"firearm", name:"N1903", image:"images/N1903.webp", type:"Rifle (bolt-action)", ammo:"7.62mm Round", capacity:5, scarcity:"uncommon", notes:"Popular WWI rifle.", outpostPrice:12000},
+  {cat:"firearm", name:"Mosin-Nagant", image:"images/Mosin_Nagant.webp", type:"Rifle (bolt-action)", ammo:"7.62mm Round", capacity:5, scarcity:"common", notes:"Surplus bolt-action rifle.", outpostPrice:6000},
+  {cat:"firearm", name:"AK", image:"images/AK.webp", type:"Rifle (7.62)", ammo:"7.62mm Round", capacity:30, rpm:600, scarcity:"uncommon", notes:"A timeless classic.", outpostPrice:13000},
+  {cat:"firearm", name:"Eighty-Four", image:"images/Eigthy_Four.webp", type:"Anti-tank (single-use)", ammo:"Eighty-Four Round", scarcity:"rare", notes:"Single-use AT tube.", outpostPrice:100000},
+
+  {cat:"melee", name:"Combat Knife", image:"images/320px-Combat_Knife.webp", type:"Bladed", notes:"Basic Cutting / Can Opener / Knife. Swing 0.6s. DMG 17. DPS 31.", msrpUSD:80, weight:"1.1 kg"},
+  {cat:"melee", name:"Machete", image:"images/320px-Machete.webp", type:"Bladed", notes:"Large machete. Weight 7.5 lbs (3.4 kg).", msrpUSD:120},
+  {cat:"melee", name:"Crowbar", image:"images/320px-Crowbar.webp", type:"Blunt", notes:"Swing 0.7s • DMG 11 • DPS 15 • Can opener.", msrpUSD:60},
+
+  {cat:"explosive", name:"Dynamite", image:"images/320px-Dynamite.webp", type:"Explosive", tooltip:"A stick of dynamite.", notes:"Ignition 3.0s • Base DMG 100 HP.", outpostPrice:1000},
+  {cat:"explosive", name:"Dynamite Pack", image:"images/320px-Dynamite_Pack.webp", type:"Explosive", tooltip:"Three sticks of dynamite.", notes:"Base raiding • Ignition 3.0s • Base DMG 1000 HP.", outpostPrice:3000},
+  {cat:"explosive", name:"Frag Grenade", image:"images/320px-Frag_Grenade.webp", type:"Explosive", tooltip:"A fragmentation grenade.", notes:"Base raiding • Ignition 3.0s • Base DMG 500 HP.", outpostPrice:5000},
+
+  {cat:"ammo", name:"9mm Round", image:"images/320px-9mm_ammo.png", perRound:25,  count:50, boxNote:"A box of 9mm rounds.", weapons:"R&F MP5, Wolfram 17", weight:"0.0 kg"},
+  {cat:"ammo", name:".38 Special Round", image:"images/320px-38_Special_Round.webp", perRound:25,  count:20, boxNote:"A box of .38 Special rounds.", weapons:"—", weight:"0.0 kg"},
+  {cat:"ammo", name:".45 ACP Round", image:"images/320px-45_ACP_Rounds.webp", perRound:35,  count:13, boxNote:"A box of .45 ACP rounds.", weapons:"LoneStar 1911", weight:"0.01 kg"},
+  {cat:"ammo", name:"5.56mm Round", image:"images/320px-556_Round.webp", perRound:50, count:10, boxNote:"A box of 5.56mm rounds.", weapons:"N4", weight:"0.0 kg"},
+  {cat:"ammo", name:"7.62mm Round", image:"images/320px-7.webp", perRound:50, count:21, boxNote:"A box of 7.62mm rounds.", weapons:"AK, Mosin Nagant, N1903", weight:"0.0 kg"},
+  {cat:"ammo", name:"12 Gauge Round", image:"images/320px-12gauge.webp", perRound:75, count:20, boxNote:"A box of 12 Gauge rounds.", weapons:"Sanwerk SRG, N870", weight:"0.0 kg"},
+  {cat:"ammo", name:"5.7×28mm Round", image:"images/320px-57x28mm.webp", perRound:75, count:1,  boxNote:"A box of 5.7×28mm rounds.", weapons:"UN Fifty Seven, UN P9", weight:"0.0 kg"},
+  {cat:"ammo", name:"Flare", image:"images/320px-Flare_ammo.webp", perRound:10, count:1,  boxNote:"For use with a flare gun. Highly flammable rounds!", weight:"0.0 kg"},
+  {cat:"ammo", name:"Taser Cartridge", image:"images/320px-Taser_Catridge.webp", perRound:20, count:1,  boxNote:"Live taser cartridges.", weight:"0.0 kg"},
+  {cat:"ammo", name:"Eighty-Four Round", image:"", perRound:50000, count:1, boxNote:"An 84mm explosive shell.", weight:"0.4 kg"},
+
+  {cat:"magazine", name:"Wolfram 17 Magazine - 17 Round", image:"images/320px-Wolfram_magazine.webp", ammoType:"9mm Round", capacity:17, notes:"A Wolfram 17 magazine. Holds 9mm rounds.", weight:"0.09 kg"},
+  {cat:"magazine", name:"UN P9 Magazine - 50 Round", image:"images/320px-UN_P9_Magazine.webp", ammoType:"5.7×28mm Round", capacity:50, notes:"A P9 magazine. Holds 5.7×28mm rounds.", weight:"0.09 kg"},
+  {cat:"magazine", name:"R&F MP5 Magazine - 30 Round", image:"images/320px-R&F_MP5_Magazine.png", ammoType:"9mm Round", capacity:30, notes:"An MP5 magazine. Holds 9mm rounds.", weight:"0.09 kg"},
+  {cat:"magazine", name:"N4 Magazine - 30 Round", image:"images/320px-N4_Magazine.webp", ammoType:"5.56mm Round", capacity:30, notes:"An N4 magazine. Holds 5.56mm rounds.", weight:"0.09 kg"},
+  {cat:"magazine", name:"LoneStar 1911 Magazine - 8 Round", image:"images/320px-Lonestar_magazine.webp", ammoType:".45 ACP Round", capacity:8, notes:"A LoneStar 1911 magazine. Holds .45 ACP rounds.", weight:"0.09 kg"},
+  {cat:"magazine", name:"Fifty-Seven Magazine - 20 Round", image:"images/320px-57_Magazine_20Round.webp", ammoType:"5.7×28mm Round", capacity:20, notes:"A UN Fifty-Seven magazine. Holds 5.7×28mm rounds.", weight:"0.09 kg"},
+  {cat:"magazine", name:"AK Magazine - 30 Round", image:"images/320px-AK_Magazine.webp", ammoType:"7.62mm Round", capacity:30, notes:"An AK magazine. Holds 7.62mm rounds.", weight:"0.2 kg"}
+];
+
+/* ------------ SALE ROTATION (every 5 hours) ------------ */
+const SALE_WINDOW_MS = 5*60*60*1000;
+function currentSaleWindowId(){ return Math.floor(Date.now()/SALE_WINDOW_MS); }
+function seededRandom(seed){ const x = Math.sin(seed*9301 + 49297) * 233280; return x - Math.floor(x); }
+function pickSaleItem(){
+  const firearms = INVENTORY.filter(i=>i.cat==='firearm');
+  if(!firearms.length) return null;
+  const win = currentSaleWindowId();
+  const idx = Math.floor(seededRandom(win)*firearms.length);
+  return firearms[idx]?.name || null;
+}
+let SALE_ITEM_NAME = pickSaleItem();
+function isOnSale(item){ return item.cat==='firearm' && item.name === SALE_ITEM_NAME; }
+
+/* Pricing helpers */
+const MAG_MULT = 0.7;
+function findAmmoByName(name){
+  return INVENTORY.find(i => i.cat==='ammo' && i.name.toLowerCase() === String(name||'').toLowerCase());
+}
+function baseOutpostPrice(item){
+  if (item.outpostPrice != null) return Math.round(item.outpostPrice);
+  if (item.cat === "ammo") return Math.round((item.perRound||0) * (item.count||1));
+  if (item.cat === "magazine"){
+    const amm = findAmmoByName(item.ammoType || item.ammo);
+    if (amm && amm.perRound) return Math.round(amm.perRound * (item.capacity||1) * MAG_MULT);
+    return Math.round((item.capacity||1) * 1000 * MAG_MULT);
+  }
+  if (item.cat === "melee") return Math.round(item.msrpUSD || 100);
+  return 0;
+}
+function effectiveOutpostPrice(item){
+  const base = baseOutpostPrice(item);
+  if (isOnSale(item)) return Math.round(base * 0.5);
+  return base;
+}
+function effectiveSellPrice(item){
+  const base = baseOutpostPrice(item);
+  const normalSell = Math.round(base * 0.4);
+  if (isOnSale(item)) return Math.round(normalSell * 1.7);
+  return normalSell;
+}
+
+/* ------------ UI / Search / Filters / Sorting ------------ */
+const q = document.getElementById('q');
+const ammoSel = document.getElementById('ammo');
+const sortSel = document.getElementById('sort');
+const grid = document.getElementById('grid');
+const none = document.getElementById('none');
+
+let activeCategory = 'firearm';
+document.querySelectorAll('#subtabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#subtabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeCategory = t.getAttribute('data-cat');
+    document.querySelector('.controls').style.visibility = (activeCategory==='firearm') ? 'visible' : 'hidden';
+    render();
+  });
+});
+
+// Ammo options
+function buildAmmoOptions(){
+  const ammoTypes = [...new Set(INVENTORY.filter(i=>i.cat==='firearm').map(i=>i.ammo).filter(Boolean))].sort();
+  ammoSel.innerHTML = ["<option value='*'>All ammo types</option>", ...ammoTypes.map(a=>`<option>${a}</option>`)].join('');
+}
+buildAmmoOptions();
+
+function spec(label, value){
+  return `<div class="spec"><div class="label">${label}</div><div class="value">${value}</div></div>`;
+}
+function dmgAsNumber(d){ if(!d) return 0; const m = String(d).match(/(\d+(\.\d+)?)/); return m? Number(m[1]) : 0; }
+function sortItems(items){
+  const by = sortSel.value || 'name';
+  if (by==='name') items.sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+  if (by==='price') items.sort((a,b)=> (effectiveOutpostPrice(a)||0) - (effectiveOutpostPrice(b)||0));
+  if (by==='damage') items.sort((a,b)=> dmgAsNumber(b.damage) - dmgAsNumber(a.damage));
+}
+
+function render(){
+  const qv = q?.value?.trim().toLowerCase() || '';
+  const av = ammoSel?.value || '*';
+
+  const items = INVENTORY.filter(i=>{
+    if (i.cat !== activeCategory) return false;
+    const text = `${i.name} ${i.type||''} ${i.ammo||i.ammoType||''} ${i.notes||''} ${i.boxNote||''}`.toLowerCase();
+    const passText = !qv || text.includes(qv);
+    const passAmmo = activeCategory!=='firearm' || av==='*' || (i.ammo && i.ammo===av);
+    return passText && passAmmo;
+  });
+  sortItems(items);
+
+  grid.innerHTML = items.map(i=>{
+    const price = effectiveOutpostPrice(i);
+    const sell = effectiveSellPrice(i);
+    const rightChip =
+      i.cat==='ammo' ? (i.count? `${i.count} rd${i.count>1?'s':''}` : '1 rd') :
+      i.cat==='magazine' ? (`${i.capacity||''} rd`) :
+      (i.ammo || i.type || '');
+    let details = "";
+    if (i.cat === "ammo"){
+      details = `${spec('Per Round', '₦'+(i.perRound||0).toLocaleString())}${spec('Box Size', i.count||1)}${spec('For', i.weapons||'—')}`;
+    } else if (i.cat === "magazine"){
+      details = `${spec('Caliber', i.ammoType||'—')}${spec('Capacity', i.capacity||1)}${spec('Weight', i.weight||'—')}`;
+    } else {
+      details = `${i.capacity!=null? spec('Capacity', i.capacity):''}${i.rpm? spec('RPM', i.rpm):''}${i.dps? spec('DPS', i.dps):''}${i.damage? spec('Damage', i.damage):''}${i.weight? spec('Weight', i.weight):''}`;
+    }
+    const saleTag = isOnSale(i) ? `<div class="sale-badge">SALE ⚡ 50% OFF</div>` : '';
+    return `
+    <div class="card item" data-name="${i.name.replace(/"/g,'&quot;')}" style="position:relative">
+      ${saleTag}
+      ${i.image? `<img src="${i.image}" alt="${i.name}" class="weapon-img">` : ''}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <div><h3>${i.name}</h3><div class="muted" style="font-size:13px">${i.type||''}</div></div>
+        <div class="chip">${rightChip}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">${details}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">
+        ${spec('Outpost Price', `<span class="price-bright">₦${(price||0).toLocaleString()}</span>`)}
+        ${spec('Sell Price', `<span class="price-bright">₦${(sell||0).toLocaleString()}</span>`)}
+        ${spec('Category', (i.cat||'').toUpperCase())}
+      </div>
+      <p class="note">${isOnSale(i) ? 'Limited-time sale: outpost price -50%, sell value +70%.' : 'Vendors buy at 40% of base value.'}</p>
+      ${i.boxNote? `<p class="muted" style="margin-top:6px">${i.boxNote}</p>` : ''}
+      ${i.tooltip? `<p class="muted" style="margin-top:6px">${i.tooltip}</p>` : ''}
+      ${i.notes? `<p class="muted" style="margin-top:6px">${i.notes}</p>` : ''}
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.card.item').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const name = card.getAttribute('data-name');
+      const item = INVENTORY.find(x=>x.name===name);
+      if(!item) return;
+      openModal(item);
+    });
+  });
+
+  none.style.display = items.length ? 'none':'block';
+}
+
+/* ------------ Modal ------------ */
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modalBody');
+document.getElementById('modalClose').addEventListener('click', ()=> modal.style.display='none');
+modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.style.display='none' });
+
+function openModal(i){
+  const price = effectiveOutpostPrice(i);
+  const sell = effectiveSellPrice(i);
+  modalBody.innerHTML = `
+    <div style="display:grid;grid-template-columns: 280px 1fr; gap:16px">
+      <div>${i.image? `<img src="${i.image}" alt="${i.name}" style="width:100%;border-radius:12px;border:1px solid var(--ring)">` : ''}</div>
+      <div>
+        <h2 style="margin:0 0 8px" class="neon">${i.name}</h2>
+        <div class="muted" style="margin-bottom:10px">${i.type||''}</div>
+        <div class="grid cols-3" style="margin-top:8px">
+          ${i.ammo? spec('Ammo', i.ammo): (i.ammoType? spec('Caliber', i.ammoType):'')}
+          ${i.capacity!=null? spec('Capacity', i.capacity):''}
+          ${i.rpm? spec('RPM', i.rpm):''}
+          ${i.damage? spec('Damage', i.damage):''}
+          ${i.weight? spec('Weight', i.weight):''}
+          ${i.count? spec('Box Size', i.count):''}
+        </div>
+        <div class="grid cols-3" style="margin-top:10px">
+          ${spec('Outpost Price', `<span class="price-bright">₦${(price||0).toLocaleString()}</span>`)}
+          ${spec('Sell Price', `<span class="price-bright">₦${(sell||0).toLocaleString()}</span>`)}
+          ${spec('Category', (i.cat||'').toUpperCase())}
+        </div>
+        ${i.boxNote? `<p class="muted" style="margin-top:8px">${i.boxNote}</p>`:''}
+        ${i.tooltip? `<p class="muted" style="margin-top:6px">${i.tooltip}</p>`:''}
+        ${i.notes? `<p class="muted" style="margin-top:6px">${i.notes}</p>`:''}
+      </div>
+    </div>
+  `;
+  modal.style.display='flex';
+}
+
+/* ------------ Featured Item Rotation (Home) ------------ */
+function pickFeatured(){
+  const pool = INVENTORY.filter(i=>i.cat==='firearm');
+  const item = pool[Math.floor(Math.random()*pool.length)];
+  const price = effectiveOutpostPrice(item);
+  const sell = effectiveSellPrice(item);
+  const el = document.getElementById('featured');
+  el.innerHTML = `
+    <h3><span class="tag">FEATURED</span> ${item.name}</h3>
+    <div style="display:grid;grid-template-columns: 240px 1fr; gap:12px; align-items:center">
+      <div>${item.image? `<img src="${item.image}" alt="${item.name}" style="width:100%;border-radius:12px;border:1px dashed rgba(179,255,26,.25);background:rgba(0,0,0,.35)">`:''}</div>
+      <div>
+        <p class="muted" style="margin:.25rem 0 .75rem">${item.notes || item.type || ''}</p>
+        <div class="grid cols-3">
+          ${spec('Outpost', `<span class="price-bright">₦${(price||0).toLocaleString()}</span>`)}
+          ${spec('Sell', `<span class="price-bright">₦${(sell||0).toLocaleString()}</span>`)}
+          ${spec('Ammo', item.ammo || '—')}
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn primary" onclick="show('weapons')">View in Shop</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ------------ Terminal animation (Shop) ------------ */
+const tty = document.getElementById('ttylog');
+function typeLines(lines, cb){
+  let idx = 0;
+  function next(){
+    if(idx>=lines.length){ cb&&cb(); return; }
+    let line = lines[idx++];
+    let i=0, out='';
+    const timer = setInterval(()=>{
+      out += line.charAt(i++);
+      tty.textContent = out;
+      if(i>=line.length){ clearInterval(timer); tty.textContent += '\n'; setTimeout(next, 200); }
+    }, 10 + Math.random()*20);
+  }
+  next();
+}
+function openTerminalThenShop(){
+  const overlay = document.getElementById('terminal');
+  tty.textContent = '';
+  overlay.style.display='flex';
+  const lines = [
+    '> AUTH GoodGaming.Outpost[Dannemora] … OK',
+    '> SYNC inventory.firearms … OK',
+    '> SYNC inventory.ammo … OK',
+    '> SYNC inventory.magazines … OK',
+    '> APPLY price_table … OK',
+    '> LOAD storefront UI … OK',
+    '> Handshake complete. Opening armory …'
+  ];
+  typeLines(lines, ()=>{
+    overlay.style.display='none';
+    show('weapons');
+    render();
+  });
+}
+
+/* ------------ (REMOVED) Particles & Torch code ------------ */
+
+/* ------------ Boot loader (robust fade-out & fail-safe) ------------ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const bar = document.getElementById('bootbar');
+  const boot = document.getElementById('boot');
+  let pct = 0;
+  const t = setInterval(()=>{
+    pct = Math.min(100, pct + Math.random()*18);
+    bar.style.width = pct + '%';
+    if(pct>=100){
+      clearInterval(t);
+      // trigger fade
+      boot.classList.add('hide');
+      // ensure it's fully removed after transition (and add a fail-safe)
+      const tidy = ()=>{ boot.style.display='none'; boot.removeEventListener('transitionend', tidy); };
+      boot.addEventListener('transitionend', tidy);
+      setTimeout(tidy, 1200);
+    }
+  }, 220);
+  // hard fail-safe in case interval gets interrupted
+  setTimeout(()=>{
+    if(boot && boot.style.display!=='none'){ boot.classList.add('hide'); setTimeout(()=> boot.style.display='none', 800); }
+  }, 6000);
+});
+
+/* ------------ Nav wiring ------------ */
+document.querySelectorAll('[data-nav]').forEach(b=> b.addEventListener('click', ()=>{
+  const target = b.getAttribute('data-nav');
+  if(target==='weapons'){ openTerminalThenShop(); }
+  else if(target==='home'){ show('home'); }
+}));
+document.getElementById('enterShop').addEventListener('click', openTerminalThenShop);
+document.getElementById('navShop').addEventListener('click', (e)=>{ e.preventDefault(); openTerminalThenShop(); });
+
+/* ------------ NPC Dialogue (Shop) ------------ */
+const npcBubble = document.getElementById('npcBubble');
+const npcText = document.getElementById('npcText');
+const NPC_LINES = [
+  ['Hugh Jackedman', 'You got creds, you got guns. Don’t waste my time.'],
+  ['Hugh Jackedman', 'SMGs for speed, rifles for reach. Your call, traveler.'],
+  ['Hugh Jackedman', 'We don’t do refunds. We do results.'],
+  ['Billy Bob Jenkins', 'Ain’t a jam I can’t fix. For a price.'],
+  ['Billy Bob Jenkins', 'Keep the safeties on inside. Boss’ll have my hide.'],
+  ['Billy Bob Jenkins', 'Today’s deals are hotter than a barrel fresh off a mag dump.'],
+];
+function rotateNPC(){
+  const [name,line] = NPC_LINES[Math.floor(Math.random()*NPC_LINES.length)];
+  npcBubble.querySelector('.name').textContent = `[${name}]`;
+  npcText.textContent = line;
+}
+setInterval(rotateNPC, 9000);
+
+/* ------------ Black Market small dialogue ------------ */
+const bmNpcText = document.getElementById('bmNpcText');
+const BM_LINES = [
+  'Keep it quiet, buyer…',
+  'Cash speaks. The walls don’t.',
+  'In, out, no questions.',
+  'No witnesses. No problems.',
+  'The Smith sees everything.'
+];
+setInterval(()=>{ bmNpcText.textContent = BM_LINES[Math.floor(Math.random()*BM_LINES.length)]; }, 8000);
+
+/* ------------ Card Light Pulse ------------ */
+function randomPulse(){
+  const cards = Array.from(document.querySelectorAll('.card.item'));
+  if(!cards.length) return;
+  const c = cards[Math.floor(Math.random()*cards.length)];
+  c.classList.add('pulse');
+  setTimeout(()=> c.classList.remove('pulse'), 1500);
+}
+setInterval(randomPulse, 12000);
+
+/* ------------ Sale window rollover ------------ */
+let lastWindowId = currentSaleWindowId();
+setInterval(()=>{ const nowId = currentSaleWindowId(); if(nowId!==lastWindowId){ lastWindowId=nowId; SALE_ITEM_NAME=pickSaleItem(); render(); } }, 60000);
+
+/* ------------ Featured + initial render ------------ */
+pickFeatured();
+render();
+document.querySelector('.controls').style.visibility = (activeCategory==='firearm') ? 'visible' : 'hidden';
+
+/* ------------ Unlock system (footer) ------------ */
+const bmCardWrap = document.getElementById('bmCardWrap');
+const unlock = document.getElementById('unlock');
+const unlockBtn = document.getElementById('unlockBtn');
+const unlockMsg = document.getElementById('unlockMsg');
+
+function revealBlackMarket(){
+  bmCardWrap.style.display = 'block';
+  unlockMsg.textContent = 'Black Market unlocked';
+}
+function checkUnlockPersist(){
+  if(localStorage.getItem('gg_bm_unlocked')==='1') revealBlackMarket();
+}
+checkUnlockPersist();
+
+function tryUnlock(){
+  const val = (unlock.value||'').trim().toLowerCase();
+  if(val==='blacksmith'){
+    localStorage.setItem('gg_bm_unlocked','1');
+    revealBlackMarket();
+  }else{
+    unlockMsg.textContent = 'Invalid code';
+  }
+}
+unlockBtn.addEventListener('click', tryUnlock);
+unlock.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryUnlock(); });
+
+/* ------------ Enter Black Market ------------ */
+document.getElementById('enterBlackMarket')?.addEventListener('click', ()=>{
+  // cinematic: just switch section (no terminal typing needed)
+  show('blackmarket');
+});
+</script>
+</body>
+</html>
