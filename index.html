@@ -157,8 +157,6 @@ footer{margin-top:30px;color:var(--muted);text-align:center;padding:14px;border-
 <div class="grime"></div>
 <div class="dust"></div>
 
-<!-- CRT overlay/toggle removed -->
-
 <!-- Loading Screen -->
 <div id="boot" aria-hidden="true">
   <div class="logo neon flicker">GOODGAMING COMMUNITY STORES</div>
@@ -326,6 +324,32 @@ footer{margin-top:30px;color:var(--muted);text-align:center;padding:14px;border-
         </div>
       </div>
 
+      <!-- Tunnel Snakes Inc (NEW) -->
+      <div class="card bm">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <h3>Tunnel Snakes Inc.</h3>
+            <div class="muted">Owner: <strong>Ocean man</strong></div>
+          </div>
+          <div class="chip bm-chip">PHARMACY</div>
+        </div>
+        <div style="display:grid;grid-template-columns: 120px 1fr; gap:10px; align-items:center; margin-top:6px">
+          <div>
+            <img src="images/Tunnelsnakes.png" alt="Tunnel Snakes Logo" style="width:100%;border-radius:8px;border:1px solid rgba(255,255,255,.04)">
+          </div>
+          <div>
+            <p class="muted" style="margin:0 0 8px">Dedicated to providing sweet, sweet relief in these trying times. We hire the finest street pharmacists to ensure our products are pure and safe.</p>
+            <div style="margin-top:6px">
+              <button class="btn bm-btn" id="enterTunnelSnakes">Enter Tunnel Snakes →</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="note">Price list (on-site): Weed ₦4,500 • Coke ₦8,500 • LSD ₦11,150 • Steroids ₦15,500</div>
+        </div>
+      </div>
+
       <!-- Expansion / Coming soon -->
       <div class="card bm">
         <h3>More businesses coming soon…</h3>
@@ -333,6 +357,29 @@ footer{margin-top:30px;color:var(--muted);text-align:center;padding:14px;border-
         <div style="margin-top:10px"><button class="btn">Contact Yes_Man</button></div>
       </div>
     </div>
+  </section>
+
+  <!-- TUNNEL SNAKES SHOP (NEW BRANCHED SHOP PAGE) -->
+  <section id="tunnelsnakes" style="display:none">
+    <div class="npc"><div class="bubble"><span class="name">[Ocean man]</span> <span id="tsNpcText">We run clean. No drama. Good prices.</span></div></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;flex-wrap:wrap">
+      <div>
+        <button class="btn" onclick="show('blackmarket')">← Back</button>
+        <strong style="margin-left:12px;font-size:18px">Tunnel Snakes Inc. — Black Market Pharmacy</strong>
+        <div style="margin-top:6px;color:var(--muted)">Owner: Ocean man — "Dedicated to providing sweet, sweet relieve in these trying times."</div>
+      </div>
+      <div class="controls" style="flex-wrap:wrap">
+        <input id="qTS" class="input" placeholder="Search product…" style="width:220px" />
+        <select id="sortTS" class="select">
+          <option value="name">Sort: Name (A→Z)</option>
+          <option value="price">Sort: Price (Low→High)</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="gridTS" class="grid cols-2"></div>
+    <p id="noneTS" class="muted" style="display:none;margin-top:12px">No items match that search.</p>
   </section>
 </main>
 
@@ -352,15 +399,18 @@ document.getElementById('year').textContent = new Date().getFullYear();
 const sections = {
   home: document.getElementById('home'),
   weapons: document.getElementById('weapons'),
-  blackmarket: document.getElementById('blackmarket')
+  blackmarket: document.getElementById('blackmarket'),
+  tunnelsnakes: document.getElementById('tunnelsnakes')
 };
 function show(which){
   sections.home.style.display = which==='home' ? 'block':'none';
   sections.weapons.style.display = which==='weapons' ? 'block':'none';
   sections.blackmarket.style.display = which==='blackmarket' ? 'block':'none';
+  sections.tunnelsnakes.style.display = which==='tunnelsnakes' ? 'block':'none';
 }
 
 /* ------------ INVENTORY (prices as approved) ------------ */
+/* (original INVENTORY unchanged) */
 const INVENTORY = [
   {cat:"firearm", name:"Wolfram 17", image:"images/Wolfram_17.webp", type:"Pistol (semi-auto)", ammo:"9mm Round", capacity:17, rpm:800, damage:"22 HP", scarcity:"common", notes:"Beautiful and blocky.", outpostPrice:3000},
   {cat:"firearm", name:"UN Fifty Seven", image:"images/UN_Fifty_Seven.webp", type:"Pistol", ammo:"5.7×28mm Round", capacity:20, rpm:800, damage:"32 HP", scarcity:"rare", notes:"Fires a rare type of ammunition. European designed.", outpostPrice:4000},
@@ -403,6 +453,14 @@ const INVENTORY = [
   {cat:"magazine", name:"AK Magazine - 30 Round", image:"images/320px-AK_Magazine.webp", ammoType:"7.62mm Round", capacity:30, notes:"An AK magazine. Holds 7.62mm rounds.", weight:"0.2 kg"}
 ];
 
+/* ------------ Tunnel Snakes Inventory (new) ------------ */
+const TS_INVENTORY = [
+  {cat:"drug", name:"Cannabis (Weed)", image:"images/Cannabis.png", type:"Relaxant • Smoke", notes:"A relaxing drug, usually smoked.", outpostPrice:4500},
+  {cat:"drug", name:"Cocaine (Coke)", image:"images/Cocaine.png", type:"Stimulant", notes:"A strong stimulant.", outpostPrice:8500},
+  {cat:"drug", name:"LSD", image:"images/LSD.png", type:"Psychedelic", notes:"A psychedelic drug.", outpostPrice:11150},
+  {cat:"drug", name:"Steroid Vial", image:"images/steroid.png", type:"Anabolic", notes:"A plastic vial, probably containing anabolic steroids.", outpostPrice:15500}
+];
+
 /* ------------ SALE ROTATION (every 5 hours) ------------ */
 const SALE_WINDOW_MS = 5*60*60*1000;
 function currentSaleWindowId(){ return Math.floor(Date.now()/SALE_WINDOW_MS); }
@@ -431,6 +489,7 @@ function baseOutpostPrice(item){
     return Math.round((item.capacity||1) * 1000 * MAG_MULT);
   }
   if (item.cat === "melee") return Math.round(item.msrpUSD || 100);
+  // drugs default handled by outpostPrice presence, else 0
   return 0;
 }
 function effectiveOutpostPrice(item){
@@ -445,7 +504,7 @@ function effectiveSellPrice(item){
   return normalSell;
 }
 
-/* ------------ UI / Search / Filters / Sorting ------------ */
+/* ------------ UI / Search / Filters / Sorting (weapons) ------------ */
 const q = document.getElementById('q');
 const ammoSel = document.getElementById('ammo');
 const sortSel = document.getElementById('sort');
@@ -474,8 +533,9 @@ function spec(label, value){
   return `<div class="spec"><div class="label">${label}</div><div class="value">${value}</div></div>`;
 }
 function dmgAsNumber(d){ if(!d) return 0; const m = String(d).match(/(\d+(\.\d+)?)/); return m? Number(m[1]) : 0; }
-function sortItems(items){
-  const by = sortSel.value || 'name';
+function sortItems(items, sortElement){
+  const sel = sortElement || sortSel;
+  const by = sel.value || 'name';
   if (by==='name') items.sort((a,b)=> (a.name||'').localeCompare(b.name||''));
   if (by==='price') items.sort((a,b)=> (effectiveOutpostPrice(a)||0) - (effectiveOutpostPrice(b)||0));
   if (by==='damage') items.sort((a,b)=> dmgAsNumber(b.damage) - dmgAsNumber(a.damage));
@@ -528,7 +588,7 @@ function render(){
       ${i.boxNote? `<p class="muted" style="margin-top:6px">${i.boxNote}</p>` : ''}
       ${i.tooltip? `<p class="muted" style="margin-top:6px">${i.tooltip}</p>` : ''}
       ${i.notes? `<p class="muted" style="margin-top:6px">${i.notes}</p>` : ''}
-    </div>`;
+    </div>`; 
   }).join('');
 
   document.querySelectorAll('.card.item').forEach(card=>{
@@ -580,7 +640,7 @@ function openModal(i){
   modal.style.display='flex';
 }
 
-/* ------------ Featured Item Rotation (Home) ------------ */
+/* ------------ Featured + initial render ------------ */
 function pickFeatured(){
   const pool = INVENTORY.filter(i=>i.cat==='firearm');
   const item = pool[Math.floor(Math.random()*pool.length)];
@@ -605,6 +665,9 @@ function pickFeatured(){
     </div>
   `;
 }
+pickFeatured();
+render();
+document.querySelector('.controls').style.visibility = (activeCategory==='firearm') ? 'visible' : 'hidden';
 
 /* ------------ Terminal animation (Shop) ------------ */
 const tty = document.getElementById('ttylog');
@@ -669,7 +732,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 /* ------------ Nav wiring ------------ */
-document.querySelectorAll('[data-nav]').forEach(b=> b.addEventListener('click', ()=>{
+document.querySelectorAll('[data-nav]').forEach(b=> b.addEventListener('click', ()=>{ 
   const target = b.getAttribute('data-nav');
   if(target==='weapons'){ openTerminalThenShop(); }
   else if(target==='home'){ show('home'); }
@@ -720,11 +783,6 @@ setInterval(randomPulse, 12000);
 let lastWindowId = currentSaleWindowId();
 setInterval(()=>{ const nowId = currentSaleWindowId(); if(nowId!==lastWindowId){ lastWindowId=nowId; SALE_ITEM_NAME=pickSaleItem(); render(); } }, 60000);
 
-/* ------------ Featured + initial render ------------ */
-pickFeatured();
-render();
-document.querySelector('.controls').style.visibility = (activeCategory==='firearm') ? 'visible' : 'hidden';
-
 /* ------------ Unlock system (footer) ------------ */
 const bmCardWrap = document.getElementById('bmCardWrap');
 const unlock = document.getElementById('unlock');
@@ -754,9 +812,70 @@ unlock.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryUnlock(); });
 
 /* ------------ Enter Black Market ------------ */
 document.getElementById('enterBlackMarket')?.addEventListener('click', ()=>{
-  // cinematic: just switch section (no terminal typing needed)
   show('blackmarket');
 });
+
+/* ------------ Tunnel Snakes: wiring & rendering (new) ------------ */
+document.getElementById('enterTunnelSnakes')?.addEventListener('click', ()=>{
+  // we could do a terminal animation; for simplicity, show directly
+  show('tunnelsnakes');
+  renderTunnelSnakes();
+});
+
+const qTS = document.getElementById('qTS');
+const sortTS = document.getElementById('sortTS');
+const gridTS = document.getElementById('gridTS');
+const noneTS = document.getElementById('noneTS');
+
+function renderTunnelSnakes(){
+  const qv = qTS?.value?.trim().toLowerCase() || '';
+  const items = TS_INVENTORY.filter(i=>{
+    const text = `${i.name} ${i.type||''} ${i.notes||''}`.toLowerCase();
+    return !qv || text.includes(qv);
+  });
+  sortItems(items, sortTS);
+  gridTS.innerHTML = items.map(i=>{
+    const price = effectiveOutpostPrice(i);
+    return `
+      <div class="card item" data-name-ts="${i.name.replace(/"/g,'&quot;')}" style="position:relative">
+        ${i.image? `<img src="${i.image}" alt="${i.name}" class="weapon-img">` : ''}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <div><h3>${i.name}</h3><div class="muted" style="font-size:13px">${i.type||''}</div></div>
+          <div class="chip">₦${(price||0).toLocaleString()}</div>
+        </div>
+        <div style="margin-top:10px">${i.notes? `<p class="muted">${i.notes}</p>` : ''}</div>
+      </div>
+    `;
+  }).join('');
+  // attach click handlers to open modal with TS item (use openModal)
+  document.querySelectorAll('[data-name-ts]').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const name = card.getAttribute('data-name-ts');
+      const item = TS_INVENTORY.find(x=>x.name===name);
+      if(!item) return;
+      // openModal expects fields similar to INVENTORY; reuse it (it reads outpostPrice)
+      openModal(item);
+    });
+  });
+
+  noneTS.style.display = items.length ? 'none':'block';
+}
+
+qTS?.addEventListener('input', ()=> renderTunnelSnakes());
+sortTS?.addEventListener('change', ()=> renderTunnelSnakes());
+
+/* ------------ Tunnel Snakes NPC line (small flavor) ------------ */
+const tsNpcText = document.getElementById('tsNpcText');
+const TS_LINES = [
+  'Fresh stock. No fuss.',
+  'You want discreet? We got discreet.',
+  'Top-shelf batch today. Ocean guarantees it.',
+  'Keep it quiet, keep it clean.'
+];
+setInterval(()=>{ tsNpcText.textContent = TS_LINES[Math.floor(Math.random()*TS_LINES.length)]; }, 8000);
+
+/* ------------ Finalize initial UI states ------------ */
+document.querySelector('.controls').style.visibility = (activeCategory==='firearm') ? 'visible' : 'hidden';
 </script>
 </body>
 </html>
