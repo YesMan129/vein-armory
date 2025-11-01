@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Black Market — Good Gaming</title>
+<style>
+:root{
+  --bg:#050505;--green:#2cff7d;--red:#ff3838;--accent:#21ff59;
+  --panel:#0a1f13;--panel2:#07170f;--bd:#165a34;--bd2:#1a7b47;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:radial-gradient(1200px 800px at 50% 30%,#170000 0%,#050000 60%,#030202 100%),#000;
+  color:var(--green);font-family:ui-monospace,Consolas,Menlo,monospace;letter-spacing:.2px;overflow-x:hidden;
+}
+.crt:before{content:"";position:fixed;inset:0;pointer-events:none;background:
+  linear-gradient(rgba(0,0,0,.35),transparent 40%,rgba(0,0,0,.45)),
+  repeating-linear-gradient(0deg,rgba(0,0,0,.15)0px,rgba(0,0,0,.15)1px,transparent 2px,transparent 3px);}
+.crt:after{content:"";position:fixed;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(0,0,0,.8),inset 0 0 300px rgba(0,0,0,.8);}
+.wrap{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto;gap:10px;
+  padding:20px clamp(14px,3vw,28px);}
+header,footer{border:1px solid #230000;
+  background:linear-gradient(180deg,rgba(20,4,4,.6),rgba(10,3,3,.45));
+  padding:10px 14px;display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 0 12px rgba(255,56,56,.35),0 0 26px rgba(255,56,56,.18);}
+.title{display:flex;gap:12px;align-items:center;text-transform:uppercase;font-weight:700;letter-spacing:.12em;}
+.led{width:10px;height:10px;border-radius:2px;background:var(--red);
+  box-shadow:0 0 10px rgba(255,56,56,.9);animation:blink 1.6s steps(2,end) infinite;}
+@keyframes blink{50%{opacity:.35}}
+.panel{border:1px solid #340000;
+  background:linear-gradient(180deg,rgba(25,7,7,.6),rgba(18,6,6,.45));padding:16px;}
+.hero-img{display:block;width:100%;max-width:980px;max-height:40vh;object-fit:contain;
+  margin:6px auto 14px;border:1px solid #550000;background:#130000;
+  box-shadow:inset 0 0 40px rgba(255,56,56,.08),0 0 24px rgba(255,56,56,.14);}
+h1{margin:.2rem 0 0;text-transform:uppercase;font-size:clamp(1.4rem,2.4vw,2.1rem);color:var(--red);}
+h2{text-transform:uppercase;color:var(--accent);margin-top:20px;font-size:1rem;letter-spacing:.1em;}
+.warning{font-weight:900;color:var(--red);font-size:1.2rem;text-align:center;margin:8px 0;
+  animation:flicker 1.2s infinite;}
+@keyframes flicker{
+  0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;text-shadow:0 0 8px #ff0000,0 0 16px #ff0000;}
+  20%,24%,55%{opacity:.4;text-shadow:none;}
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:12px;}
+.card{border:1px solid #430000;
+  background:linear-gradient(180deg,rgba(29,9,9,.5),rgba(18,6,6,.45));padding:12px;
+  transition:transform .06s ease,box-shadow .2s ease,border-color .2s ease;}
+.card:hover{transform:translateY(-1px);
+  box-shadow:0 0 12px rgba(255,56,56,.35),0 0 26px rgba(255,56,56,.18);border-color:#a02626;}
+.name{font-weight:800;margin:.1rem 0 .25rem;text-transform:uppercase;color:var(--green);}
+.redacted{color:#ff0000;letter-spacing:1px;text-shadow:0 0 5px #ff0000;}
+.enter{margin-top:8px;display:inline-block;text-decoration:none;border:1px solid #440000;
+  color:var(--green);padding:6px 10px;font-weight:600;text-transform:uppercase;
+  background:rgba(25,0,0,.3);transition:.2s;}
+.enter:hover{background:rgba(60,0,0,.6);box-shadow:0 0 10px #ff0000;}
+.back{margin-top:16px;display:inline-flex;gap:10px;align-items:center;text-decoration:none;
+  color:var(--accent);border:1px solid #330000;padding:8px 12px;
+  background:linear-gradient(180deg,rgba(58,19,19,.7),rgba(30,10,10,.65));}
+.back:hover{border-color:#a02626;box-shadow:0 0 12px rgba(255,56,56,.35);}
+</style>
+</head>
+<body class="crt">
+<div class="wrap">
+  <header>
+    <div class="title"><span class="led"></span><span>The Black Market</span></div>
+    <div>Restricted Access Only</div>
+  </header>
+
+  <main class="panel">
+    <img src="assets/BlackMarketPage.png" alt="Black Market" class="hero-img" />
+    <h1>Enter if you dare</h1>
+    <div class="warning">ENTER IF YOU DARE</div>
+    <p class="redacted">█████████████████████████████████████████████████████████████████████</p>
+
+    <h2>Shops within the Market</h2>
+
+    <section class="grid">
+      <article class="card">
+        <div class="name">Phills Hitman Service</div>
+        <p>Elimination contracts. No questions asked.</p>
+        <a href="phills.html" class="enter">Enter</a>
+      </article>
+
+      <article class="card">
+        <div class="name">Tunnel Snake Inc. Pharmaceuticals</div>
+        <p>Experimental chems, vials, and illicit substances.</p>
+        <a href="tunnel-snake.html" class="enter">Enter</a>
+      </article>
+    </section>
+
+    <a class="back" href="index.html">◀ Back to Main Store</a>
+  </main>
+
+  <footer>
+    <div>© <span id="year"></span> Good Gaming</div>
+    <div>Access at your own risk</div>
+  </footer>
+</div>
+<script>document.getElementById("year").textContent=new Date().getFullYear()</script>
+</body>
+</html>

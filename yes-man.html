@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Yes_Man — Add Your Store | Good Gaming Community</title>
+<style>
+:root{
+  --bg:#050505;--green:#2cff7d;--accent:#21ff59;--panel:#0a1f13;--bd:#165a34;--bd2:#1a7b47;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:radial-gradient(1200px 800px at 50% 30%,#071407 0%,#050805 45%,#040404 100%),var(--bg);
+  color:var(--green);font-family:ui-monospace,Consolas,Menlo,monospace;letter-spacing:.2px;overflow-x:hidden;
+}
+.crt:before{content:"";position:fixed;inset:0;pointer-events:none;background:
+  linear-gradient(rgba(0,0,0,.35),transparent 40%,rgba(0,0,0,.45)),
+  repeating-linear-gradient(0deg,rgba(0,0,0,.15)0px,rgba(0,0,0,.15)1px,transparent 2px,transparent 3px);}
+.crt:after{content:"";position:fixed;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(0,0,0,.8),inset 0 0 300px rgba(0,0,0,.8);}
+.wrap{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto;gap:10px;
+  padding:20px clamp(14px,3vw,28px);}
+header,footer{border:1px solid #0f2918;
+  background:linear-gradient(180deg,rgba(8,20,10,.6),rgba(4,10,6,.35));
+  padding:10px 14px;display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 0 12px rgba(44,255,125,.35),0 0 26px rgba(44,255,125,.18);}
+.title{display:flex;gap:12px;align-items:center;text-transform:uppercase;font-weight:700;letter-spacing:.12em;}
+.led{width:10px;height:10px;border-radius:2px;background:var(--green);
+  box-shadow:0 0 10px rgba(44,255,125,.9);animation:blink 1.6s steps(2,end) infinite;}
+@keyframes blink{50%{opacity:.35}}
+.panel{border:1px solid var(--bd);
+  background:linear-gradient(180deg,rgba(7,25,15,.6),rgba(7,18,12,.45));padding:16px;}
+.hero-img{display:block;width:100%;max-width:980px;max-height:40vh;object-fit:contain;
+  margin:6px auto 14px;border:1px solid var(--bd2);background:#06140c;
+  box-shadow:inset 0 0 40px rgba(33,255,89,.08),0 0 24px rgba(33,255,89,.14);}
+h1{margin:.2rem 0 0;text-transform:uppercase;font-size:clamp(1.4rem,2.4vw,2.1rem)}
+p{max-width:720px;margin:12px auto;line-height:1.4;text-align:center;}
+.discord{
+  margin:24px auto;display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--bd2);padding:10px 18px;text-decoration:none;
+  color:var(--green);background:rgba(10,30,18,.45);font-weight:700;text-transform:uppercase;
+}
+.discord:hover{border-color:#26a25c;box-shadow:0 0 10px rgba(44,255,125,.35);}
+.back{margin-top:24px;display:inline-flex;gap:10px;align-items:center;text-decoration:none;
+  color:var(--accent);border:1px solid var(--bd2);padding:8px 12px;
+  background:linear-gradient(180deg,rgba(19,58,35,.7),rgba(10,30,18,.65));}
+.back:hover{border-color:#26a25c;box-shadow:0 0 12px rgba(44,255,125,.35);}
+</style>
+</head>
+<body class="crt">
+<div class="wrap">
+  <header>
+    <div class="title"><span class="led"></span><span>Yes_Man — Store Registration</span></div>
+    <div>Good Gaming Community Portal</div>
+  </header>
+
+  <main class="panel">
+    <img src="assets/yesmanlogo.png" alt="Yes_Man" class="hero-img" />
+    <h1>Add Your Store</h1>
+    <p>
+      Want to list your in-game shop on the Good Gaming Community Store?  
+      Contact <strong>Yes_Man</strong> on Discord to register your business, upload inventory,  
+      and get a custom storefront like Hugh’s Guns, Nit3stalker’s Goods, or Tunnel Snakes Inc.
+    </p>
+
+    <a href="https://discord.com/users/987026277187878942" class="discord" target="_blank">
+      💬 Contact Yes_Man on Discord
+    </a>
+
+    <a class="back" href="index.html">◀ Back to Main Store</a>
+  </main>
+
+  <footer>
+    <div>© <span id="year"></span> Good Gaming</div>
+    <div>Community-Driven Storefront Network</div>
+  </footer>
+</div>
+<script>document.getElementById("year").textContent=new Date().getFullYear()</script>
+</body>
+</html>

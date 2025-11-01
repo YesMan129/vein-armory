@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hugh's Gun Store</title>
+<style>
+:root {
+  --bg:#050505;--green:#2cff7d;--accent:#21ff59;--red:#ff3838;
+  --panel:#0a1f13;--bd:#165a34;--bd2:#1a7b47;--muted:#80ffb0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html, body { height: 100%; display: flex; flex-direction: column; }
+body{
+  background:radial-gradient(1000px 600px at 50% 20%,#071407 0%,#050805 45%,#040404 100%),var(--bg);
+  color:var(--green);font-family:ui-monospace,Consolas,Menlo,monospace;letter-spacing:.3px;overflow-x:hidden;
+}
+.crt::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,255,0,0.03)0px,rgba(0,255,0,0.03)2px,transparent 3px,transparent 4px);
+}
+header,footer{
+  border:1px solid var(--bd);
+  background:linear-gradient(180deg,rgba(8,20,10,.6),rgba(4,10,6,.35));
+  padding:10px 14px;display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 0 12px rgba(44,255,125,.35),0 0 26px rgba(44,255,125,.18);
+  text-transform:uppercase;font-weight:700;letter-spacing:.12em;
+}
+main{
+  flex: 1;
+  border:1px solid var(--bd);
+  background:linear-gradient(180deg,rgba(7,25,15,.6),rgba(7,18,12,.45));
+  padding:16px;box-shadow:0 0 12px rgba(44,255,125,.15),inset 0 0 60px rgba(33,255,89,.05);
+  max-width:1000px;margin:20px auto;width:100%;
+  display:flex;flex-direction:column;gap:12px;
+}
+footer{text-align:center;font-size:.8rem;margin-top:auto}
+
+/* SALE banner */
+.sale-banner{
+  border:1px solid var(--bd2);
+  background:linear-gradient(180deg,rgba(9,29,17,.6),rgba(6,18,11,.45));
+  padding:10px 12px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  box-shadow:0 0 10px rgba(44,255,125,.2);
+}
+.sale-left{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.badge{
+  display:inline-block;border:1px solid var(--bd2);padding:2px 8px;
+  font-weight:900;color:#031; background:#2cff7d; text-shadow:0 0 6px rgba(33,255,89,.6);
+}
+.badge.red{ background:#ff3838; color:#000; text-shadow:none; border-color:#9a1f1f;}
+.sale-item-name{font-weight:800;text-transform:uppercase}
+.countdown{color:var(--muted);font-weight:700}
+
+/* Tabs + grid */
+h1{text-align:center;margin:0}
+.tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.tab{
+  border:1px solid var(--bd2);padding:6px 12px;cursor:pointer;background:rgba(10,30,18,.4);color:var(--green);
+  text-transform:uppercase;font-weight:700;font-size:.9rem;transition:.2s;
+}
+.tab:hover,.tab.active{border-color:#26a25c;box-shadow:0 0 10px rgba(44,255,125,.35)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;text-align:center}
+.item{
+  position:relative;border:1px solid var(--bd2);background:rgba(5,15,10,.5);padding:12px;text-transform:uppercase;font-size:.9rem;
+  box-shadow:inset 0 0 20px rgba(33,255,89,.08);
+}
+.item:hover{background:rgba(10,30,18,.7)}
+.name{font-weight:800;margin-bottom:4px}
+.price{color:var(--accent);font-weight:800}
+.old{color:#8ddfaa;text-decoration:line-through;margin-right:6px;font-weight:600}
+.saleTag{
+  position:absolute;top:8px;right:8px;font-size:.7rem;padding:2px 6px;border:1px solid #9a1f1f;background:#ff3838;color:#000;font-weight:900;
+  box-shadow:0 0 8px rgba(255,56,56,.4);
+}
+
+/* Back btn */
+.back{display:block;margin:6px auto 0;text-align:center}
+.back a{color:var(--green);text-decoration:none;border:1px solid var(--bd2);padding:6px 14px;text-transform:uppercase;font-weight:700}
+.back a:hover{border-color:#26a25c;box-shadow:0 0 10px rgba(44,255,125,.35)}
+</style>
+</head>
+<body class="crt">
+<header>
+  <div>🔫 Hugh's Gun Store</div>
+  <div>VEIN • Armory Terminal</div>
+</header>
+
+<main>
+  <!-- SALE banner -->
+  <div class="sale-banner">
+    <div class="sale-left">
+      <span class="badge red">SALE −40%</span>
+      <span>Deal of the Hour:</span>
+      <span class="sale-item-name" id="saleName">Loading…</span>
+    </div>
+    <div class="countdown">Next deal in <span id="countdown">--:--</span></div>
+  </div>
+
+  <h1>Inventory</h1>
+  <div class="tabs">
+    <div class="tab active" onclick="showCategory('firearm')">Firearms</div>
+    <div class="tab" onclick="showCategory('ammo')">Ammo</div>
+    <div class="tab" onclick="showCategory('magazine')">Magazines</div>
+    <div class="tab" onclick="showCategory('melee')">Melee</div>
+    <div class="tab" onclick="showCategory('explosive')">Explosives</div>
+  </div>
+
+  <div id="items" class="grid"></div>
+  <div class="back"><a href="index.html">⬅ Back to Main</a></div>
+</main>
+
+<footer>
+  <div>© <span id="year"></span> Good Gaming Community</div>
+  <div>Built by Survivors • Terminal UI</div>
+</footer>
+
+<script>
+/* ====== Inventory Data ====== */
+const INVENTORY = [
+  {cat:"firearm", name:"Wolfram 17", outpostPrice:3000, ammo:"9mm Round"},
+  {cat:"firearm", name:"UN Fifty Seven", outpostPrice:4000, ammo:"5.7×28mm Round"},
+  {cat:"firearm", name:"UN P9", outpostPrice:11200, ammo:"5.7×28mm Round"},
+  {cat:"firearm", name:"Taser", outpostPrice:1000, ammo:"Taser Cartridge"},
+  {cat:"firearm", name:"Sanwerk SRG", outpostPrice:7000, ammo:"12 Gauge Round"},
+  {cat:"firearm", name:"N870", outpostPrice:5000, ammo:"12 Gauge Round"},
+  {cat:"firearm", name:"R&F MP5", outpostPrice:10000, ammo:"9mm Round"},
+  {cat:"firearm", name:"N4", outpostPrice:11200, ammo:"5.56mm Round"},
+  {cat:"firearm", name:"N1903", outpostPrice:12000, ammo:"7.62mm Round"},
+  {cat:"firearm", name:"Mosin-Nagant", outpostPrice:6000, ammo:"7.62mm Round"},
+  {cat:"firearm", name:"AK", outpostPrice:13000, ammo:"7.62mm Round"},
+  {cat:"firearm", name:"Eighty-Four", outpostPrice:100000, ammo:"Eighty-Four Round"},
+  {cat:"firearm", name:"LoneStar 1911", outpostPrice:4000, ammo:".45 ACP Round"},
+  {cat:"firearm", name:"LoneStar Viper", outpostPrice:6000, ammo:".38 Special Round"},
+  {cat:"firearm", name:"Flare Gun", outpostPrice:500, ammo:"Flare"},
+
+  {cat:"ammo", name:"9mm Round", outpostPrice:25},
+  {cat:"ammo", name:".38 Special Round", outpostPrice:25},
+  {cat:"ammo", name:".45 ACP Round", outpostPrice:35},
+  {cat:"ammo", name:"5.56mm Round", outpostPrice:50},
+  {cat:"ammo", name:"7.62mm Round", outpostPrice:50},
+  {cat:"ammo", name:"12 Gauge Round", outpostPrice:75},
+  {cat:"ammo", name:"5.7×28mm Round", outpostPrice:75},
+  {cat:"ammo", name:"Flare", outpostPrice:10},
+  {cat:"ammo", name:"Taser Cartridge", outpostPrice:20},
+  {cat:"ammo", name:"Eighty-Four Round", outpostPrice:50000},
+
+  {cat:"magazine", name:"Wolfram 17 Magazine", ammoType:"9mm Round", capacity:17},
+  {cat:"magazine", name:"UN P9 Magazine", ammoType:"5.7×28mm Round", capacity:50},
+  {cat:"magazine", name:"R&F MP5 Magazine", ammoType:"9mm Round", capacity:30},
+  {cat:"magazine", name:"N4 Magazine", ammoType:"5.56mm Round", capacity:30},
+  {cat:"magazine", name:"LoneStar 1911 Magazine", ammoType:".45 ACP Round", capacity:8},
+  {cat:"magazine", name:"Fifty-Seven Magazine", ammoType:"5.7×28mm Round", capacity:20},
+  {cat:"magazine", name:"AK Magazine", ammoType:"7.62mm Round", capacity:30},
+
+  {cat:"melee", name:"Combat Knife", outpostPrice:80},
+  {cat:"melee", name:"Machete", outpostPrice:120},
+  {cat:"melee", name:"Crowbar", outpostPrice:60},
+
+  {cat:"explosive", name:"Dynamite", outpostPrice:1000},
+  {cat:"explosive", name:"Dynamite Pack", outpostPrice:3000},
+  {cat:"explosive", name:"Frag Grenade", outpostPrice:5000}
+];
+
+/* ====== Helpers ====== */
+function getAmmoPrice(type) {
+  const ammo = INVENTORY.find(i => i.cat==="ammo" && i.name===type);
+  return ammo ? ammo.outpostPrice : 0;
+}
+function basePrice(item) {
+  if (item.cat === "magazine") return getAmmoPrice(item.ammoType) * item.capacity;
+  return item.outpostPrice || 0;
+}
+
+/* ====== Hourly Sale Selector (Deterministic) ====== */
+/* One item on sale per hour, −40% */
+function currentSaleIndex() {
+  const now = new Date();
+  // Deterministic seed per hour: YYYYMMDDHH
+  const seed = Number(`${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}${now.getHours().toString().padStart(2,'0')}`);
+  // Simple LCG-ish mix to spread across inventory length
+  let x = (seed ^ 0x9e3779b9) >>> 0;
+  x = (x + 0x7f4a7c15) >>> 0;
+  x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+  return Math.abs(x) % INVENTORY.length;
+}
+function isOnSale(item) {
+  return INVENTORY[currentSaleIndex()].name === item.name && INVENTORY[currentSaleIndex()].cat === item.cat;
+}
+function salePrice(p) { return Math.round(p * 0.6); } // 40% off
+
+/* ====== Countdown to Next Hour ====== */
+function updateCountdown() {
+  const now = new Date();
+  const next = new Date(now);
+  next.setMinutes(60,0,0); // top of next hour
+  const ms = next - now;
+  const s = Math.max(0, Math.floor(ms/1000));
+  const mPart = String(Math.floor(s/60)).padStart(2,'0');
+  const sPart = String(s % 60).padStart(2,'0');
+  document.getElementById('countdown').textContent = `${mPart}:${sPart}`;
+  if (s === 0) {
+    // New hour: re-render sale + current tab
+    setSaleBanner();
+    const active = document.querySelector('.tab.active');
+    const cat = active ? active.textContent.toLowerCase() : 'firearms';
+    const map = {firearms:'firearm', ammo:'ammo', magazines:'magazine', melee:'melee', explosives:'explosive'};
+    showCategory(map[cat] || 'firearm');
+  }
+}
+function setSaleBanner() {
+  const item = INVENTORY[currentSaleIndex()];
+  document.getElementById('saleName').textContent = `${item.name} (${item.cat}) — 40% OFF`;
+}
+
+/* ====== Rendering ====== */
+function showCategory(cat) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[onclick="showCategory('${cat}')"]`).classList.add('active');
+
+  const container = document.getElementById("items");
+  container.innerHTML = "";
+
+  const items = INVENTORY.filter(i => i.cat===cat);
+  for (const item of items) {
+    const p = basePrice(item);
+    const sale = isOnSale(item);
+    const finalPrice = sale ? salePrice(p) : p;
+
+    container.innerHTML += `
+      <div class="item">
+        ${sale ? `<span class="saleTag">SALE -40%</span>` : ``}
+        <div class="name">${item.name}</div>
+        <div class="price">
+          ${sale ? `<span class="old">$${p.toLocaleString()}</span>` : ``}
+          <span>$${finalPrice.toLocaleString()}</span>
+        </div>
+      </div>`;
+  }
+}
+
+/* ====== Init ====== */
+document.getElementById("year").textContent = new Date().getFullYear();
+setSaleBanner();
+showCategory("firearm");
+updateCountdown();
+setInterval(updateCountdown, 1000); // live countdown
+</script>
+</body>
+</html>

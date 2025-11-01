@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Good Gaming Community Store</title>
+<style>
+:root {
+  --bg:#050505;--green:#2cff7d;--accent:#21ff59;--panel:#0a1f13;
+  --bd:#165a34;--bd2:#1a7b47;--muted:#80ffb0;--red:#ff3838;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+body{
+  background:radial-gradient(1000px 600px at 50% 20%,#071407 0%,#050805 45%,#040404 100%),var(--bg);
+  color:var(--green);
+  font-family:ui-monospace,Consolas,Menlo,monospace;
+  letter-spacing:.3px;
+  overflow:hidden;
+}
+.crt::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,255,0,0.03)0px,rgba(0,255,0,0.03)2px,transparent 3px,transparent 4px);
+  z-index:999;
+}
+
+/* ===== Header/Footer ===== */
+header,footer{
+  border:1px solid var(--bd);
+  background:linear-gradient(180deg,rgba(8,20,10,.6),rgba(4,10,6,.35));
+  padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 0 12px rgba(44,255,125,.35),0 0 26px rgba(44,255,125,.18);
+  text-transform:uppercase;font-weight:700;letter-spacing:.12em;
+}
+footer{text-align:center;font-size:.8rem;margin-top:auto;justify-content:center;}
+
+/* ===== Boot Screen ===== */
+#boot{
+  position:fixed;inset:0;
+  background:#010201;
+  display:flex;justify-content:center;align-items:center;
+  flex-direction:column;
+  z-index:9999;
+  color:var(--green);
+  font-family:inherit;
+  text-align:left;
+  padding:20px;
+  animation:bootFade 3.5s ease 4.2s forwards;
+}
+@keyframes bootFade{to{opacity:0;visibility:hidden;}}
+#boot p{
+  width:90%;
+  max-width:720px;
+  white-space:pre-line;
+  border-right:2px solid var(--accent);
+  overflow:hidden;
+  animation:type 3s steps(40,end),blink .7s step-end infinite alternate;
+}
+@keyframes type{from{width:0;}to{width:90%;}}
+@keyframes blink{50%{border-color:transparent;}}
+
+/* ===== Main ===== */
+main{
+  flex:1;
+  border:1px solid var(--bd);
+  background:linear-gradient(180deg,rgba(7,25,15,.6),rgba(7,18,12,.45));
+  padding:16px;
+  box-shadow:0 0 12px rgba(44,255,125,.15),inset 0 0 60px rgba(33,255,89,.05);
+  max-width:1000px;margin:20px auto;width:100%;
+  display:flex;justify-content:center;align-items:center;
+  position:relative;
+  opacity:0;animation:showMain 1s ease 4.2s forwards;
+}
+@keyframes showMain{to{opacity:1;}}
+
+/* ===== Carousel ===== */
+.carousel{width:100%;text-align:center;position:relative;}
+.slide{display:none;flex-direction:column;align-items:center;animation:fadeIn .8s ease-in-out;}
+.slide.active{display:flex;}
+.slide img{
+  width:320px;height:auto;
+  border:1px solid var(--bd2);
+  margin-bottom:12px;
+  box-shadow:0 0 10px rgba(33,255,89,.25);
+}
+.slide h2{
+  font-size:1.4rem;
+  margin:6px 0;
+  text-shadow:0 0 8px rgba(44,255,125,.5);
+}
+.slide p{font-size:1rem;opacity:.9;margin-bottom:10px;}
+.slide a{
+  color:var(--green);
+  border:1px solid var(--bd2);
+  text-decoration:none;
+  padding:6px 16px;
+  text-transform:uppercase;
+  font-weight:bold;
+  transition:all .2s ease-in-out;
+  box-shadow:0 0 8px rgba(33,255,89,.2);
+}
+.slide a:hover{
+  background:var(--green);
+  color:#000;
+  box-shadow:0 0 15px var(--accent);
+}
+.red-warning{
+  color:var(--red);
+  text-shadow:0 0 8px var(--red);
+  animation:flicker 1.2s infinite alternate;
+}
+@keyframes flicker{
+  0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;}
+  20%,24%,55%{opacity:.3;}
+}
+.arrows{
+  position:absolute;top:50%;width:100%;
+  display:flex;justify-content:space-between;
+  transform:translateY(-50%);
+}
+.arrow{
+  background:rgba(33,255,89,.04);
+  border:1px solid var(--bd);
+  color:var(--green);
+  font-size:2em;
+  cursor:pointer;
+  padding:6px 12px;
+  transition:all .2s;
+  box-shadow:0 0 8px rgba(33,255,89,.15);
+}
+.arrow:hover{
+  background:var(--green);
+  color:#000;
+  box-shadow:0 0 10px var(--accent);
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+</style>
+</head>
+
+<body class="crt">
+<!-- Boot-Up Terminal -->
+<div id="boot">
+  <p>INITIALIZING COMMUNITY TERMINAL . . .  
+SYNCING STORE NETWORKS . . .  
+CONNECTION ESTABLISHED.  
+LOADING MAIN DIRECTORY /ROOT/STORES . . .  
+ACCESS GRANTED.  
+> ACCESSING MAIN HUB_</p>
+</div>
+
+<header>
+  <div>GOOD GAMING COMMUNITY STORE</div>
+  <div>VEIN • TERMINAL ACCESS</div>
+</header>
+
+<main>
+  <div class="carousel">
+    <div class="slide active">
+      <img src="assets/HughGunStore.png" alt="Hugh's Gun Store">
+      <h2>Hugh Jackedman’s Gun Store</h2>
+      <p>Reliable firepower. Community trusted. Enter with caution.</p>
+      <a href="hughs.html">Enter Store</a>
+    </div>
+
+    <div class="slide">
+      <img src="assets/nit3stalkershoppic.png" alt="Nit3stalker's Goods">
+      <h2>Nit3stalker’s Goods</h2>
+      <p>Got vehicles? I’ll buy them. Need parts? I got you.</p>
+      <a href="nit3stalker.html">Enter Store</a>
+    </div>
+
+    <div class="slide">
+      <img src="assets/BlackMarketPage.png" alt="Black Market">
+      <h2>Black Market</h2>
+      <p class="red-warning">ENTER IF YOU DARE</p>
+      <a href="black-market.html" style="border-color:var(--red);color:var(--red);box-shadow:0 0 10px var(--red);">[REDACTED]</a>
+    </div>
+
+    <div class="slide">
+      <img src="assets/YesManPlaceholder.png" alt="Yes_Man Coming Soon">
+      <h2>Yes_Man’s Directory</h2>
+      <p>Store registration terminal under construction.</p>
+      <a href="#">Coming Soon</a>
+    </div>
+
+    <div class="arrows">
+      <div class="arrow" id="prev">&#60;</div>
+      <div class="arrow" id="next">&#62;</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  © <span id="year"></span> GOOD GAMING COMMUNITY NETWORK
+</footer>
+
+<script>
+const slides=document.querySelectorAll(".slide");
+let index=0;
+function showSlide(i){
+  slides.forEach(s=>s.classList.remove("active"));
+  slides[i].classList.add("active");
+}
+document.getElementById("next").addEventListener("click",()=>{index=(index+1)%slides.length;showSlide(index);});
+document.getElementById("prev").addEventListener("click",()=>{index=(index-1+slides.length)%slides.length;showSlide(index);});
+document.getElementById("year").textContent=new Date().getFullYear();
+</script>
+</body>
+</html>

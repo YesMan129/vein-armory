@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Nit3stalker's Super Deluxe Shop</title>
+<style>
+:root {
+  --bg:#050505;--green:#2cff7d;--accent:#21ff59;--panel:#0a1f13;--bd:#165a34;--bd2:#1a7b47;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+body{
+  background:radial-gradient(1000px 600px at 50% 20%,#071407 0%,#050805 45%,#040404 100%),var(--bg);
+  color:var(--green);
+  font-family:ui-monospace,Consolas,Menlo,monospace;
+  letter-spacing:.3px;
+  overflow-x:hidden;
+}
+.crt::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,255,0,0.03)0px,rgba(0,255,0,0.03)2px,transparent 3px,transparent 4px);
+}
+header,footer{
+  border:1px solid var(--bd);
+  background:linear-gradient(180deg,rgba(8,20,10,.6),rgba(4,10,6,.35));
+  padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 0 12px rgba(44,255,125,.35),0 0 26px rgba(44,255,125,.18);
+  text-transform:uppercase;font-weight:700;letter-spacing:.12em;
+}
+main{
+  flex:1;
+  border:1px solid var(--bd);
+  background:linear-gradient(180deg,rgba(7,25,15,.6),rgba(7,18,12,.45));
+  padding:16px;
+  box-shadow:0 0 12px rgba(44,255,125,.15),inset 0 0 60px rgba(33,255,89,.05);
+  max-width:1000px;margin:20px auto;width:100%;
+  display:flex;flex-direction:column;justify-content:flex-start;
+}
+h1{text-align:center;margin-bottom:10px;}
+.tabs{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;
+}
+.tab{
+  border:1px solid var(--bd2);
+  padding:6px 12px;cursor:pointer;
+  background:rgba(10,30,18,.4);color:var(--green);
+  text-transform:uppercase;font-weight:700;font-size:.9rem;
+  transition:.2s;
+}
+.tab:hover,.tab.active{
+  border-color:#26a25c;
+  box-shadow:0 0 10px rgba(44,255,125,.35);
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;text-align:center;
+}
+.item{
+  border:1px solid var(--bd2);
+  background:rgba(5,15,10,.5);
+  padding:10px;
+  text-transform:uppercase;
+  font-size:.9rem;
+  box-shadow:inset 0 0 20px rgba(33,255,89,.08);
+}
+.item:hover{background:rgba(10,30,18,.7);}
+.name{font-weight:700;}
+.price{color:var(--accent);}
+.back{display:block;margin:20px auto;text-align:center;}
+.back a{
+  color:var(--green);text-decoration:none;border:1px solid var(--bd2);
+  padding:6px 14px;text-transform:uppercase;font-weight:700;
+}
+.back a:hover{border-color:#26a25c;box-shadow:0 0 10px rgba(44,255,125,.35);}
+footer{text-align:center;font-size:.8rem;margin-top:auto;}
+</style>
+</head>
+<body class="crt">
+<header>
+  <div>💰 Nit3stalker's Super Deluxe Shop</div>
+  <div>VEIN • Deluxe Services Terminal</div>
+</header>
+
+<main>
+  <h1>Available Goods & Services</h1>
+  <div class="tabs">
+    <div class="tab active" onclick="showCategory('service')">Vehicle Services</div>
+    <div class="tab" onclick="showCategory('construction')">Construction</div>
+    <div class="tab" onclick="showCategory('utilities')">Utilities</div>
+    <div class="tab" onclick="showCategory('misc')">Miscellaneous</div>
+  </div>
+
+  <div id="items" class="grid"></div>
+  <div class="back"><a href="index.html">⬅ Back to Main</a></div>
+</main>
+
+<footer>
+  <div>© <span id="year"></span> Good Gaming Community</div>
+  <div>Built by Survivors • Terminal UI</div>
+</footer>
+
+<script>
+const NIT3_ITEMS = [
+  {cat:"service", name:"Vehicle Buy-Out — Any Vehicle", outpostPrice:10000},
+  {cat:"construction", name:"T1 Construction", outpostPrice:100},
+  {cat:"construction", name:"T2 Construction", outpostPrice:300},
+  {cat:"construction", name:"T3 Construction", outpostPrice:750},
+  {cat:"construction", name:"T4 Construction", outpostPrice:1500},
+  {cat:"utilities", name:"Makeshift Solar Panel", outpostPrice:3500},
+  {cat:"utilities", name:"Makeshift Battery", outpostPrice:2500},
+  {cat:"utilities", name:"Makeshift Windmill", outpostPrice:2000},
+  {cat:"utilities", name:"Makeshift Fridge/Freezer", outpostPrice:3000},
+  {cat:"utilities", name:"Gas Generator", outpostPrice:5000},
+  {cat:"utilities", name:"Well", outpostPrice:1000},
+  {cat:"utilities", name:"Rain Collector", outpostPrice:500},
+  {cat:"misc", name:"RollerBlades", outpostPrice:500},
+  {cat:"misc", name:"Combat Bag", outpostPrice:1000},
+  {cat:"misc", name:"Body Armor", outpostPrice:1000},
+  {cat:"misc", name:"Schematics", outpostPrice:5000},
+  {cat:"misc", name:"Level Book", outpostPrice:2000},
+  {cat:"misc", name:"XP Magazine", outpostPrice:1000},
+  {cat:"misc", name:"500 Canned Food Survival Pack", outpostPrice:2000}
+];
+
+function showCategory(cat) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[onclick="showCategory('${cat}')"]`).classList.add('active');
+  const container = document.getElementById("items");
+  container.innerHTML = "";
+  const items = NIT3_ITEMS.filter(i => i.cat === cat);
+  for (const item of items) {
+    container.innerHTML += `
+      <div class="item">
+        <div class="name">${item.name}</div>
+        <div class="price">$${item.outpostPrice.toLocaleString()}</div>
+      </div>`;
+  }
+}
+showCategory("service");
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
